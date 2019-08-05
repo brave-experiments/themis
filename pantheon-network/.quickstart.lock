@@ -1,0 +1,3 @@
+-f docker-compose_poa.yml
+1.1.4-ibft2
+scale:4
