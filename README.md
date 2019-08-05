@@ -1,20 +1,18 @@
-## BAT-Quorum
+## Decentralized BAT network experiments
 
-Research and testing of a privacy preserving POA ledger for token transfer
-between BAT entities.
+Research, PoCs and testing towards privacy preserving and scalable PoA chain for
+the Brave Rewards program.
 
-### Requirements
+### Background
 
--	One directional BAT payments in which both payer and receiver entity are
-	private, while the receiver cannot learn about the payer identity.
-- Smart Contract for tips, in which payer and receiver entities are private and a
-  fixed, well known percentage of the payment is transferred to a well known,
-public address (i.e. Brave);
-- Oracle that informs whether a transaction can happen or not, based on fraud
-  checks and policies.;
-- Permissioned ledger with possibility for external validators to join the
-  network; 
-- High Throughput ledger;
+[Privacy Preserving and Decentralized Brave Rewards - slides](https://docs.google.com/presentation/d/1Z-SSLBkcZfuTQOTjwB1lU5HoSkYUSBlxd0F__nHQgvc/edit#slide=id.p1)
+
+### Content
+
+- [Anonymous Zether smart contracts](./anonymous-zether)
+- [Quorum network with 7 validator nodes (docker deployment)](./quorum-network)
+- [Pantheon Network](./pantheon-network)
+- [Network visualizer for Ethereum and Quorum](./networkviz)
 
 --- 
 
