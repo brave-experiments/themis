@@ -66,6 +66,10 @@ services:
       - public-keys:${PANTHEON_PUBLIC_KEY_DIRECTORY}
     depends_on:
       - bootnode
+    ports:
+      - "18546:8546"
+      - "18545:8545"
+      - "30303:30303"
 
   explorer:
     build: block-explorer-light/.
