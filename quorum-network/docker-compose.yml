@@ -6,11 +6,16 @@
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS="--rpccorsdomain https://remix.ethereum.org"
-version: "3.6"
+version: "3.7"
 x-quorum-def:
   &quorum-def
   restart: "on-failure"
   image: "${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.2.4}"
+  #deploy:
+  #  resources:
+  #    limits:
+  #      #memory: 400m
+  #      cpus: '0.1'
   expose:
     - "21000"
     - "50400"
