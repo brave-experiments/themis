@@ -1,18 +1,15 @@
 {
-  "name": "web3js",
+  "name": "elsolidity",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "We implement a smart contract that perfoms operations over encrypted data in solidity.",
+  "main": "elgamal_client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aztec/bn128": "^1.3.1",
-    "bn.js": "^5.1.1",
-    "quorum-js": "^0.3.0",
-    "solc": "^0.4.25",
-    "web3": "^1.0.0-beta.34"
+    "solc": "^0.5.0",
+    "web3": "^1.2.6"
   }
 }
