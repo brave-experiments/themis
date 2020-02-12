@@ -27,13 +27,27 @@ contract ElGamal {
         return aggregate;
     }
 
-    function decryption_proof() {
-      bn128_multiply([1, 2, 3]);
-      bn128_multiply([1, 2, 3]);
-      bn128_multiply([1, 2, 3]);
-      bn128_add([1, 2, 3, 4]);
-      keccak256("hello");
+    function decryption_proof() public {
+      uint256[2] memory one;
+      uint256[2] memory two;
+      uint256[2] memory three;
+      uint256[2] memory four;
+      uint256[2] memory five;
+      bytes32 hash;
+
+      uint256 X = uint256(1368015179489954701390400359078579693043519447331113978918064868415326638035);
+      uint256 Y = uint256(9918110051302171585080402603319702774565515993150576347155970296011118125764);
+      uint256 scalar = 2;
+
+      one = bn128_multiply([X, Y, scalar]);
+      two = bn128_multiply([X, Y, scalar]);
+      three = bn128_multiply([X, Y, scalar]);
+      four =  bn128_add([X, Y, X, Y]);
+      five =  bn128_add([X, Y, X, Y]);
+
+      hash = keccak256("9918110051302171585080402603319702774565515993150576347155970296011118125764, 9918110051302171585080402603319702774565515993150576347155970296011118125764, 9918110051302171585080402603319702774565515993150576347155970296011118125764, 9918110051302171585080402603319702774565515993150576347155970296011118125764");
       emit DoneProof();
+      return;
     }
 
     function bn128_add(uint256[4] memory input) private returns (uint256[2] memory result) {
