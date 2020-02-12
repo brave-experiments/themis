@@ -5,6 +5,7 @@ contract ElGamal {
     uint constant length_policies = 4;
     
     event Aggregate(uint256[2] aggr);
+    event DoneProof();
 
     function inner_product(uint256[2][length_policies] memory ciphertext_vector, uint256[length_policies] memory scalar_vector) payable public returns (uint256[2] memory)
     {
@@ -25,7 +26,16 @@ contract ElGamal {
         emit Aggregate(aggregate);
         return aggregate;
     }
-  
+
+    function decryption_proof() {
+      bn128_multiply([1, 2, 3]);
+      bn128_multiply([1, 2, 3]);
+      bn128_multiply([1, 2, 3]);
+      bn128_add([1, 2, 3, 4]);
+      keccak256("hello");
+      emit DoneProof();
+    }
+
     function bn128_add(uint256[4] memory input) private returns (uint256[2] memory result) {
         bool success;
         assembly {

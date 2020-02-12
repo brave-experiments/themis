@@ -1,5 +1,4 @@
 const Migrations = artifacts.require("Migrations");
-const Migrations = artifacts.require("Migrations");
 const Verifier = artifacts.require("Verifier");
 const Pairing = artifacts.require("Pairing");
 const BN256G = artifacts.require("BN256G");

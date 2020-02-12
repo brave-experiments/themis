@@ -8,7 +8,7 @@ const web3 = new Web3(new Web3.providers.WebsocketProvider('ws://127.0.0.1:8545'
 
 //const accountAddr = "0xed9d02e382b34818e88B88a309c7fe71E65f419d"; // docker
 //const accountAddr = "0xde4737c66689177016f0c69c80a35cad710b6ca9"; // side-chain:
-const accountAddr = "0xFd30711C93F5Eb26EEf85d87FdD75CeBa4b351c9"; // ganache
+const accountAddr = "0x326Ee86573816a267b505AaB3f79909b0e7bBa3a"; // ganache
 
 let deployedContractAddr;
 
@@ -31,6 +31,7 @@ const params = {
   gasLimit: 500000
 };
 
+let initTime;
 
 async function start() {
   await deploy_contract.deploy({data: "0x" + bytecode}).send(params, (err, res) => {
@@ -60,35 +61,44 @@ async function start() {
     .on('data', event => { console.log("Result: ("+ event.returnValues.aggr+")") })
     .on('error', (err) => { console.log(err) });
 
-  let ciphertext_vector = [
-    [ uint256('1368015179489954701390400359078579693043519447331113978918064868415326638035'), 
-      uint256('9918110051302171585080402603319702774565515993150576347155970296011118125764')
-    ],
-    [ uint256('4503322228978077916651710446042370109107355802721800704639343137502100212473'), 
-      uint256('6132642251294427119375180147349983541569387941788025780665104001559216576968')
-    ],
-    [ uint256('9836339169314901400584090930519505895878753154116006108033708428907043344230'), 
-      uint256('2085718088180884207082818799076507077917184375787335400014805976331012093279')
-    ],
-    [ uint256('13093913218499068528079927169315581029488038715846819897949203493926040477433'), 
-      uint256('18866812021242893984958271807367250411442129524282083647490667697096642392711')
-    ]
-  ];
-  let scalar_vector = [1, 2, 1, 2];
+  //let ciphertext_vector = require("./data.js").four.ciphertext_vector;
+  //let scalar_vector = require("./data.js").four.scalar_vector;
+  //initTime = new Date();
+  //await call_inner_product(deploy_contract, ciphertext_vector, scalar_vector);
 
-  await call_inner_product(deploy_contract, ciphertext_vector, scalar_vector);
+  initTime = new Date();
+  await call_proof(deploy_contract);
 }
 
 start();
 
 async function call_inner_product(contract, ciphertext_vector, scalar_vector) {
-  let gas = 98265
+  let gas = 900719925474
 
   contract.methods.inner_product(ciphertext_vector, scalar_vector)
-    .send({from: accountAddr, addr: deployedContractAddr })
+    .send({from: accountAddr, addr: deployedContractAddr, gas: gas})
     .then(receipt => {
       //console.log(">> Call Receipt received")
-      //console.log(receipt)
+      console.log(new Date() - initTime)
+      process.exit(0)
+      
+  })
+  .catch(err => {
+    console.log("Some err was caught: "+err)
+    process.exit(0)
+  })
+}
+
+async function call_proof(contract) {
+  let gas = 900719925474
+
+  contract.methods.decryption_proof()
+    .send({from: accountAddr, addr: deployedContractAddr, gas: gas})
+    .then(receipt => {
+      //console.log(">> Call Receipt received")
+      console.log(new Date() - initTime)
+      process.exit(0)
+      
   })
   .catch(err => {
     console.log("Some err was caught: "+err)
