@@ -3,14 +3,29 @@ pragma solidity >=0.4.22 <0.6.0;
 contract ThemisPolicyContract {
   uint constant length_policies = 2;
   uint256[length_policies] policies = [1, 2];
+  
+  // TODO: use structure representing point in curve across the smart contract (replace "uint256[2]" by CurvePoint{})
+  struct CurvePoint {
+    uint256 X;
+    uint256 Y;
+  }
+
+  struct PaymentRequests {
+    uint256[2] encrypted_aggregate;
+    uint256[2] decrypted_aggregate;
+    uint256[2] proof_correct_decryption;
+    bool valid;
+  }
+
+  // public storage
   mapping (bytes32 => uint256[2][]) aggregate_storage;
+  mapping (bytes32 => PaymentRequests[]) payment_requests;
 
   event Aggregate(uint256[2] aggr);
   event DoneProof();
 
   // TODO: define constructor
   constructor() public {}
-
 
   // public
   function calculate_aggregate(
@@ -24,14 +39,32 @@ contract ThemisPolicyContract {
       policies
     );
 
-    // stores aggregate in array keyed by client_id
-    aggregate_storage[client_id].push(aggregate);
-
+    // stores aggregate in array keyed by client_id && return aggregate to caller
+    uint256[2][] storage aggregates_client = aggregate_storage[client_id];
+    aggregates_client.push(aggregate);
+    
     return aggregate;
   }
 
-  function request_payment() payable public returns (bool valid) {
-    return true;
+  function request_payment(
+    uint256[2] memory encrypted_aggregate,
+    uint256[2] memory decrypted_aggregate,
+    uint256[2] memory proof_correct_decryption,
+    bytes32 client_id
+  ) payable public returns (bool valid) {
+    // TODO: implement proof verification
+
+    bool proof_is_valid = true;
+
+    PaymentRequests memory payment_request = PaymentRequests(
+      encrypted_aggregate,
+      decrypted_aggregate,
+      proof_correct_decryption,
+      proof_is_valid);    
+
+    payment_requests[client_id].push(payment_request);
+
+    return proof_is_valid;
   }
 
   // private
