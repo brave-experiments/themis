@@ -1,0 +1,7 @@
+[package]
+name = "themis-client-rs"
+version = "0.1.0"
+authors = ["gpestana <g6pestana@gmail.com>"]
+edition = "2018"
+
+[dependencies]
