@@ -5,3 +5,5 @@ authors = ["gpestana <g6pestana@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+web3 = { git = "https://github.com/tomusdrw/rust-web3" }
+elgamal_ristretto = { git = "https://github.com/iquerejeta/elgamal" }
