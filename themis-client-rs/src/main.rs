@@ -4,7 +4,6 @@ extern crate primitive_types;
 extern crate rand;
 extern crate web3;
 
-
 use ethabi::Token::{FixedArray, FixedBytes};
 use ethabi::*;
 use primitive_types::*;
@@ -13,8 +12,8 @@ use web3::futures::Future;
 use web3::types::Address;
 
 fn main() {
-    let url = "http://18.224.69.120:22000";
-    let contract_addr = "0x83249c2366a34cCbe6b2AeFEeF94A59beFc4C4Cd";
+    let url = "http://18.222.161.183:22000";
+    let contract_addr = "e64B1F131301662B7d27444c2EffA22815Ef1558";
     let vector = to_fixed_array(
         "1368015179489954701390400359078579693043519447331113978918064868415326638035",
         "9918110051302171585080402603319702774565515993150576347155970296011118125764",
