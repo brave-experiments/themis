@@ -1,15 +1,13 @@
 [package]
 name = "themis-client-rs"
 version = "0.1.0"
-authors = ["gpestana <g6pestana@gmail.com>"]
+authors = ["gpestana <g6pestana@gmail.com>, Genysys<samuel.b.dare@gmail.com>"]
 edition = "2018"
 
 [dependencies]
 web3 = { git = "https://github.com/tomusdrw/rust-web3" }
-elgamal_ristretto = { git = "https://github.com/iquerejeta/elgamal", branch = "elgamal_bn" }
-bincode = "1.2.1"
+ethabi = "11.0.0"
+primitive-types = "0.6.0"
 hex = "*"
-rustc-hex = "2.1.0"
-ethabi = "12.0.0"
-bigint = "4.4.1"
-primitive-types = "0.7.0"
+bn = "0.4.3"
+rand= "*"
