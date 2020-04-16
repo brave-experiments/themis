@@ -6,8 +6,9 @@ edition = "2018"
 
 [dependencies]
 web3 = { git = "https://github.com/tomusdrw/rust-web3" }
+elgamal_bn = { git = "https://github.com/brave-experiments/elgamal_bn" }
 ethabi = "11.0.0"
 primitive-types = "0.6.0"
 hex = "*"
-bn = "0.4.3"
-rand= "*"
+rand = {version = "0.5", default-features = true}
+bn = {git = "https://github.com/paritytech/bn"}
