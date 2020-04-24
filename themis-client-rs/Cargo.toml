@@ -1,5 +1,5 @@
 [package]
-name = "themis-client-rs"
+name = "themis_client"
 version = "0.1.0"
 authors = ["gpestana <g6pestana@gmail.com>, Genysys<samuel.b.dare@gmail.com>"]
 edition = "2018"
