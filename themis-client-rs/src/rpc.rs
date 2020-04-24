@@ -1,12 +1,8 @@
 #![allow(dead_code)]
-
 use std::cell::RefCell;
 use std::vec::Vec;
 
-use elgamal_bn::ciphertext::Ciphertext;
-//use elgamal_bn::public::PublicKey;
-//use elgamal_bn::private::SecretKey;
-
+use web3::contract::tokens::Tokenize;
 use web3::contract::{Contract, Options};
 use web3::futures::Future;
 use web3::types::Address;
@@ -56,36 +52,27 @@ impl SideChainService<web3::transports::Http> {
         accounts
     }
 
-    pub fn call_function_remote(
+    pub fn call_function_remote<T>(
         &self,
         function_name: String,
-        input: String, // Vec<Tokenize??>
-    ) -> Result<String, ()> {
+        input: T,
+        opts: Options,
+    ) -> Result<String, ()>
+    where
+        T: Tokenize,
+    {
         let result = self
             .contract
             .call(
                 &function_name,
-                input, //encode first
+                input,
                 self.node_account_addrs.borrow()[0],
-                Options::default(), // refactor options out
+                opts,
             )
             .wait()
             .unwrap();
 
         Ok(result.to_string())
-    }
-
-    pub fn request_reward_computation(&self, client_id: String, input: Vec<Ciphertext>) -> () {
-        let encoded_input = crate::utils::encode_input_ciphertext(input);
-
-        let result = self.contract.call(
-            "calculate_aggregate",
-            (encoded_input, client_id),
-            self.node_account_addrs.borrow()[0],
-            Options::default(),
-        );
-        let aggregate = result.wait().unwrap();
-        println!("aggregate: {:?} Tx", aggregate);
     }
 }
 

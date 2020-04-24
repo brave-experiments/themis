@@ -1,6 +1,13 @@
 extern crate themis_client;
 
-use themis_client::rpc::SideChainService;
+use themis_client::rpc::*;
+use themis_client::utils::*;
+use themis_client::*;
+
+use web3::contract::Options;
+
+use bn::{Group, G1};
+use rand::thread_rng;
 
 #[test]
 fn test_request_reward_computation() {
@@ -9,7 +16,24 @@ fn test_request_reward_computation() {
     let contract_addr = "83249c2366a34cCbe6b2AeFEeF94A59beFc4C4Cd".to_string();
 
     let service = SideChainService::new(side_chain_addr, account_addr, contract_addr);
+    service.update_accounts_addrs();
 
-    let accounts_addr = service.update_accounts_addrs();
-    assert_eq!(accounts_addr[0].to_string(), "0xf81c…921d".to_string());
+    let (_sk, pk) = generate_keys();
+
+    let mut csprng = thread_rng();
+    let interaction_vec = vec![
+        pk.encrypt(&G1::random(&mut csprng)),
+        pk.encrypt(&G1::random(&mut csprng)),
+    ];
+
+    let client_id = "testing".to_string();
+    let opts = Options::default();
+    let tx_receipt = request_reward_computation(
+        service,
+        client_id, 
+        interaction_vec, 
+        opts,
+    ).unwrap();
+
+    assert_eq!(tx_receipt, "".to_string());
 }

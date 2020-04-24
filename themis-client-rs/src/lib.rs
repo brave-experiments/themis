@@ -1,31 +1,36 @@
 #![allow(dead_code)]
 
 pub mod rpc;
-mod utils;
+pub mod utils;
 
-use bn::{Group, G1};
+use crate::rpc::SideChainService;
+
+use web3::contract::Options;
+
+use elgamal_bn::ciphertext::Ciphertext;
 use elgamal_bn::private::SecretKey;
 use elgamal_bn::public::PublicKey;
 
 use rand::thread_rng;
 
-fn round_one() {
-    // crypto
-    let (_, pk) = generate_keys();
+pub fn request_reward_computation(
+    service: SideChainService<web3::transports::Http>,
+    client_id: String,
+    input: Vec<Ciphertext>,
+    opts: Options,
+) -> Result<String, ()> {
+    let function_name = "calculate_aggregate".to_string();
+    let encoded_input = crate::utils::encode_input_ciphertext(input);
 
-    // get and encrypt values to send to smart contract
-    // for now, it generate points randomly, eventually it will be user inputs
-    let mut csprng = thread_rng();
-    let interaction_vec = vec![
-        pk.encrypt(&G1::random(&mut csprng)),
-        pk.encrypt(&G1::random(&mut csprng)),
-    ];
-    let (_a, _b) = interaction_vec[0].get_points_hex_string();
-    //let _encoded_input = utils::to_fixed_array(&a.0, &a.1, &b.0, &b.1);
+    let result = service.call_function_remote(
+        function_name,
+        (encoded_input, client_id),
+        opts,
+    );
+    Ok(result.to_string());
 }
 
-// generate_keys() generates a pair of new {public, private} keys
-fn generate_keys() -> (SecretKey, PublicKey) {
+pub fn generate_keys() -> (SecretKey, PublicKey) {
     let mut csprng = thread_rng();
     let sk = SecretKey::new(&mut csprng);
     let pk = PublicKey::from(&sk);
