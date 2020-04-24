@@ -1,2 +1,4 @@
 node_modules
 .DS_Store
+themis-client-rs/.idea
+themis-client-rs/target
