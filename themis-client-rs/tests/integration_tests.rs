@@ -1,7 +1,6 @@
 extern crate themis_client;
 
 use themis_client::rpc::*;
-use themis_client::utils::*;
 use themis_client::*;
 
 use web3::contract::Options;
@@ -28,12 +27,7 @@ fn test_request_reward_computation() {
 
     let client_id = "testing".to_string();
     let opts = Options::default();
-    let tx_receipt = request_reward_computation(
-        service,
-        client_id, 
-        interaction_vec, 
-        opts,
-    ).unwrap();
+    let tx_receipt = request_reward_computation(service, client_id, interaction_vec, opts).unwrap();
 
     assert_eq!(tx_receipt, "".to_string());
 }

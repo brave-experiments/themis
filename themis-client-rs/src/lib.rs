@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 pub mod rpc;
-pub mod utils;
+mod utils;
 
 use crate::rpc::SideChainService;
 
@@ -22,12 +22,11 @@ pub fn request_reward_computation(
     let function_name = "calculate_aggregate".to_string();
     let encoded_input = crate::utils::encode_input_ciphertext(input);
 
-    let result = service.call_function_remote(
-        function_name,
-        (encoded_input, client_id),
-        opts,
-    );
-    Ok(result.to_string());
+    let result = service
+        .call_function_remote(function_name, (encoded_input, client_id), opts)
+        .unwrap();
+
+    Ok(result.to_string())
 }
 
 pub fn generate_keys() -> (SecretKey, PublicKey) {
