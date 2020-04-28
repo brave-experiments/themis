@@ -9,13 +9,16 @@ use bn::{Group, G1};
 use rand::thread_rng;
 
 #[test]
-fn test_request_reward_computation() {
-    let side_chain_addr = "http://18.222.161.183:22000".to_string();
-    let account_addr = "0xe64B1F131301662B7d27444c2EffA22815Ef1558".to_string();
-    let contract_addr = "83249c2366a34cCbe6b2AeFEeF94A59beFc4C4Cd".to_string();
+fn test_request_reward_computation_and_fetch_storage() {
+    let side_chain_addr = "http://127.0.0.1:9545".to_owned();
+    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
+    let contract_abi_path = "../build/ThemisPolicyContract.abi".to_owned();
 
-    let service = SideChainService::new(side_chain_addr, account_addr, contract_addr);
-    service.update_accounts_addrs();
+    let service = SideChainService::new(
+        side_chain_addr.clone(),
+        contract_addr.clone(),
+        contract_abi_path,
+    );
 
     let (_sk, pk) = generate_keys();
 
@@ -25,9 +28,22 @@ fn test_request_reward_computation() {
         pk.encrypt(&G1::random(&mut csprng)),
     ];
 
-    let client_id = "testing".to_string();
-    let opts = Options::default();
-    let tx_receipt = request_reward_computation(service, client_id, interaction_vec, opts).unwrap();
+    let client_id = "client_id".to_owned();
+    let tx_receipt = request_reward_computation(
+        service.clone(),
+        client_id.clone(),
+        interaction_vec,
+        Options::default(),
+    );
 
-    assert_eq!(tx_receipt, "".to_string());
+    assert!(!tx_receipt.is_err());
+
+    let result = fetch_aggregate_storage(service, client_id, Options::default());
+
+    assert!(!result.is_err());
+    let tuple = result.unwrap();
+
+    // TODO: remove zero() and fix points when we have things work e2e
+    let encrypted_point: Point = [tuple.0, tuple.1, tuple.2, tuple.3];
+    assert_eq!(encrypted_point[0], web3::types::U256::zero());
 }

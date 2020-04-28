@@ -5,10 +5,11 @@ authors = ["gpestana <g6pestana@gmail.com>, Genysys<samuel.b.dare@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-web3 = { git = "https://github.com/tomusdrw/rust-web3" }
+web3 = "0.10.0"
+ethabi = "12.0.0"
 elgamal_bn = { git = "https://github.com/brave-experiments/elgamal_bn" }
-ethabi = "11.0.0"
-primitive-types = "0.6.0"
-hex = "*"
-rand = {version = "0.5", default-features = true}
 bn = {git = "https://github.com/paritytech/bn"}
+rand = {version = "0.5", default-features = true}
+hex = "0.4.2"
+sha2 = "0.8.1"
+serde_json = "1.0.41"
