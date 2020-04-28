@@ -10,8 +10,11 @@ use rand::thread_rng;
 
 #[test]
 fn test_request_reward_computation_and_fetch_storage() {
-    let side_chain_addr = "http://127.0.0.1:9545".to_owned();
-    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
+    //let side_chain_addr = "http://127.0.0.1:9545".to_owned();
+    //let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
+    let side_chain_addr = "http://18.222.161.183:22000".to_owned();
+    let contract_addr = "e64B1F131301662B7d27444c2EffA22815Ef1558".to_owned();
+
     let contract_abi_path = "../build/ThemisPolicyContract.abi".to_owned();
 
     let service = SideChainService::new(

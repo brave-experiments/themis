@@ -28,8 +28,8 @@ pub fn request_reward_computation(
 ) -> Result<String, ()> {
     let function_name = "calculate_aggregate".to_string();
 
-    //let encoded_input_raw = crate::utils::encode_input_ciphertext(input).unwrap();
-    let encoded_input_raw = crate::utils::encode_input_ciphertext_ok(input).unwrap();
+    let encoded_input_raw = crate::utils::encode_input_ciphertext(input).unwrap();
+    //let encoded_input_raw = crate::utils::encode_input_ciphertext_ok(input).unwrap();
 
     let mut encoded_input: [Point; POLICY_SIZE] = [Point::default(); POLICY_SIZE];
     for i in 0..encoded_input_raw.len() {
