@@ -5,9 +5,14 @@ use elgamal_bn::public::PublicKey;
 use sha2::{Digest, Sha256};
 use web3::types::{H256, U256};
 
-use crate::Point;
+use crate::{Point, Proof};
+use bn::{G1, Fq};
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
+
+// pub fn encode_proof_decryption(announcement: &G1, response: &Fq) -> Result<Proof, ()> {
+//     let encoded_input: Proof =
+// }
 
 pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Point>, ()> {
     let encoded_input: Vec<Point> = input

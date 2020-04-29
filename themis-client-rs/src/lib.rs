@@ -14,11 +14,27 @@ use elgamal_bn::public::PublicKey;
 use rand::thread_rng;
 use web3::contract::Options;
 use web3::types::U256;
+use bn::{G1, Fq};
 
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
 pub const POLICY_SIZE: usize = 2;
 
 pub type Point = [U256; 4];
+// one point and one scalar
+pub type Proof = [U256; 3];
+
+pub fn submit_proof_decryption(
+    service: &SideChainService,
+    client_id: &String,
+    input: &(G1, Fq),
+    opts: &Options,
+) -> Result<String, ()> {
+    let function_name = "submit_proof_decryption".to_owned();
+
+    // let encoded_input_raw = crate::utils::encode_proof_decryption(&input.0, &input.1)
+    //     .unwrap();
+    Ok("temp".to_owned())
+}
 
 pub fn request_reward_computation(
     service: SideChainService,

@@ -47,7 +47,7 @@ fn main() {
     let tx_receipt = request_reward_computation(
         service.clone(),
         client_id.clone(),
-        interaction_vec,
+        interaction_vec.clone(),
         opts,
     );
 
@@ -68,6 +68,13 @@ fn main() {
 
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
     let expected_aggregate = sk.decrypt(&aggregate);
+
+    // let tx_proof_receipt = submit_proof_decryption(
+    //     &service.clone(),
+    //     &client_id.clone(),
+    //     &interaction_vec,
+    //     &opts
+    // );
 
     assert_eq!(
         decrypted_aggregate,
