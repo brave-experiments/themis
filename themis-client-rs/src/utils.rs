@@ -37,16 +37,13 @@ pub fn decode_ciphertext(
     pk: PublicKey
 ) -> Result<Ciphertext, ()> {
 
-    println!("{}", format!["0x{}", raw_point[0].to_string()]);
-    println!("{}", format!["0x{}", raw_point[0].to_string()].len());
-
-    let encrypted_encoded = Ciphertext::from_hex_string((
-        (format!["0x{}", raw_point[0].to_string()], 
-         format!["0x{}", raw_point[1].to_string()]), 
-        (format!["0x{}", raw_point[2].to_string()], 
-         format!["0x{}", raw_point[3].to_string()])
+    let encrypted_encoded = Ciphertext::from_dec_string(
+        ((raw_point[0].to_string(),
+         raw_point[1].to_string()),
+        (raw_point[2].to_string(),
+         raw_point[3].to_string())
         ), pk
-     );
+    );
 
      Ok(encrypted_encoded.unwrap()) // TODO: remove unwrap when error is public in bn crate
 }

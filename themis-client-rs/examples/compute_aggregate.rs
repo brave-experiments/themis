@@ -5,16 +5,14 @@ use themis_client::*;
 
 use web3::contract::Options;
 
+use bn::{Group, G1, Fq, Fr};
+use rand::thread_rng;
+use elgamal_bn::public::PublicKey;
 use elgamal_bn::ciphertext::Ciphertext;
 
-use bn::{Group, G1};
-use rand::thread_rng;
-
-#[test]
-fn test_request_reward_computation_and_fetch_storage() {
+fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
-    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
-
+    let contract_addr = "44D46221f1ca0bBEDBd5aD2b1e660794b9767afd".to_owned();
     let contract_abi_path = "../build/ThemisPolicyContract.abi".to_owned();
 
     let service = SideChainService::new(
@@ -24,12 +22,23 @@ fn test_request_reward_computation_and_fetch_storage() {
     );
 
     let (sk, pk) = generate_keys();
+    let ctxt_one = pk.encrypt(&G1::one());
+
+    // Now we encode the policy vector. This MUST be the same as in the smart contract
+    let one = Fr::one();
+    let policy_vector = [one, one + one];
 
     //let mut csprng = thread_rng();
     let interaction_vec = vec![
-        pk.encrypt(&G1::one()),
-        pk.encrypt(&G1::one()),
+        ctxt_one.clone(),
+        ctxt_one.clone(),
     ];
+
+    let multiplied_interactions: Vec<Ciphertext> = interaction_vec.clone().into_iter().zip(policy_vector.into_iter())
+        .map(|(x, &y)| x * y)
+        .collect();
+
+    let aggregate: Ciphertext = multiplied_interactions[0] + multiplied_interactions[1];
 
     let client_id = "client_id".to_owned();
     let mut opts = Options::default();
@@ -58,9 +67,10 @@ fn test_request_reward_computation_and_fetch_storage() {
     let encrypted_encoded = encrypted_encoded.unwrap();
 
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
+    let expected_aggregate = sk.decrypt(&aggregate);
 
     assert_eq!(
         decrypted_aggregate,
-        G1::one() +  G1::one() + G1::one(),
+        expected_aggregate,
     );
 }
