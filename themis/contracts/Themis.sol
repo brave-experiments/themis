@@ -1,13 +1,16 @@
-pragma solidity >=0.4.22 <0.6.0;
+//pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 contract ThemisPolicyContract {
+
   uint constant length_policies = 2;
-  uint256[length_policies] policies = [1, 2];
-  
-  // TODO: use structure representing point in curve across the smart contract (replace "uint256[2]" by CurvePoint{})
-  struct CurvePoint {
-    uint256 X;
-    uint256 Y;
+  uint256[length_policies] policies = [uint256(1), uint256(2)];
+
+  struct EncryptedAggregate {
+    uint256 x0;
+    uint256 x1;
+    uint256 y0;
+    uint256 y1;
   }
 
   struct PaymentRequests {
@@ -18,9 +21,10 @@ contract ThemisPolicyContract {
   }
 
   // public storage
-  mapping (bytes32 => uint256[4][]) aggregate_storage;
   mapping (bytes32 => PaymentRequests[]) payment_requests;
+  mapping (bytes32 => EncryptedAggregate) aggregate_storage;
 
+  event Input(uint256[4] input);
   event Aggregate(uint256[4] aggr);
   event DoneProof();
 
@@ -39,11 +43,24 @@ contract ThemisPolicyContract {
 
   }
   // public
+
+  function calculate_aggregate_mock(
+    uint256[4][length_policies] memory _input, 
+    bytes32 _client_id
+  ) payable public returns (bool) {
+  
+    return true;
+  }
+
   function calculate_aggregate(
     uint256[4][length_policies] memory input, 
     bytes32 client_id
-  ) payable public returns (uint256[4] memory) {
+  //) payable public returns (uint256[4] memory) {
+    ) payable public returns (bool) {
 
+    emit Input(input[0]);
+    emit Input(input[1]);
+    
     // calculates aggregate
     uint256[4] memory aggregate = _inner_product(
       input,
@@ -51,10 +68,19 @@ contract ThemisPolicyContract {
     );
 
     // stores aggregate in array keyed by client_id && return aggregate to caller
-    uint256[4][] storage aggregates_client = aggregate_storage[client_id];
-    aggregates_client.push(aggregate);
-    
-    return aggregate;
+    EncryptedAggregate memory enc_aggr = EncryptedAggregate({ 
+      x0: aggregate[0], 
+      x1: aggregate[1], 
+      y0: aggregate[2], 
+      y1: aggregate[3]
+    });
+    aggregate_storage[client_id] = enc_aggr;
+
+    return true;
+  }
+
+  function fetch_encrypted_aggregate(bytes32 client_id) public view returns (uint256, uint256, uint256, uint256) {
+      return  (aggregate_storage[client_id].x0, aggregate_storage[client_id].x1, aggregate_storage[client_id].y0, aggregate_storage[client_id].y1);
   }
 
   function request_payment(
@@ -79,11 +105,15 @@ contract ThemisPolicyContract {
   }
 
   // private
-  function _inner_product(uint256[4][length_policies] memory ciphertext_vector, uint256[length_policies] memory scalar_vector) private returns (uint256[4] memory) {
-      uint256[2] memory aggregate_1;
-      uint256[2] memory aggregate_2;
-      uint256[2] memory resultMult_1;
-      uint256[2] memory resultMult_2;
+  function _inner_product(
+    uint256[4][length_policies] memory ciphertext_vector, 
+    uint256[length_policies] memory scalar_vector
+  ) private returns (uint256[4] memory) {
+
+      uint256[2] memory aggregate_1 = [uint256(0), uint256(0)];
+      uint256[2] memory aggregate_2 = [uint256(0), uint256(0)];
+      uint256[2] memory resultMult_1 = [uint256(1), uint256(1)];
+      uint256[2] memory resultMult_2 =  [uint256(1), uint256(1)];
 
       for (uint i = 0; i < length_policies; i++) {
         resultMult_1 = _bn128_multiply([
@@ -99,10 +129,13 @@ contract ThemisPolicyContract {
         ]);
 
         aggregate_1 = _bn128_add([resultMult_1[0], resultMult_1[1], aggregate_1[0], aggregate_1[1]]);
+        
         aggregate_2 = _bn128_add([resultMult_2[0], resultMult_2[1], aggregate_2[0], aggregate_2[1]]);
         }
 
       uint256[4] memory aggregate = [aggregate_1[0], aggregate_1[1], aggregate_2[0], aggregate_2[1]];
+
+
       emit Aggregate(aggregate);
       return aggregate;
     }
