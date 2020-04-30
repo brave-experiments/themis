@@ -53,7 +53,6 @@ pub fn request_reward_computation(
     let client_id = utils::encode_client_id(client_id);
 
     let result = service.call_function_remote(function_name, (encoded_input, client_id), opts)?;
-
     Ok(result.to_string())
 }
 
