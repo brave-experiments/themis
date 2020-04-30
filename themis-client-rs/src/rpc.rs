@@ -1,6 +1,8 @@
 #![allow(dead_code)]
+use crate::Error;
+
 use web3::contract::tokens::Tokenize;
-use web3::contract::{Contract, Error, Options};
+use web3::contract::{Contract, Options};
 use web3::futures::Future;
 use web3::types::{Address, U256};
 
@@ -13,18 +15,23 @@ pub struct SideChainService {
 }
 
 impl SideChainService {
-    pub fn new(side_chain_addr: String, contract_addr: String, contract_abi_path: String) -> Self {
-        let (_eloop, transport) = web3::transports::Http::new(&side_chain_addr).unwrap();
-        let web3client = web3::Web3::new(transport);
-        let accounts = web3client.eth().accounts().wait().unwrap();
+    pub fn new(
+        side_chain_addr: String, 
+        contract_addr: String, 
+        contract_abi_path: String
+    ) -> Result<Self, Error> {
 
-        let contract_addr: Address = contract_addr.parse().unwrap();
-        SideChainService {
+        let (_eloop, transport) = web3::transports::Http::new(&side_chain_addr)?;
+        let web3client = web3::Web3::new(transport);
+        let accounts = web3client.eth().accounts().wait()?;
+
+        let contract_addr: Address = contract_addr.parse()?;
+        Ok(SideChainService {
             side_chain_addr,
             contract_addr,
             contract_abi_path,
             accounts,
-        }
+        })
     }
 
     pub fn call_function_remote<T>(
@@ -32,24 +39,25 @@ impl SideChainService {
         function_name: String,
         input: T,
         opts: Options,
-    ) -> Result<String, ()>
+    ) -> Result<String, Error>
     where
         T: Tokenize,
     {
-        let (_eloop, transport) = web3::transports::Http::new(&self.side_chain_addr).unwrap();
+        let (_eloop, transport) = web3::transports::Http::new(&self.side_chain_addr)?;
         let web3client = web3::Web3::new(transport);
 
-        let contract = Contract::from_json(
+        let contract = match Contract::from_json(
             web3client.eth(),
             self.contract_addr,
             include_bytes!("../build/ThemisPolicyContract.abi"), //REFACTOR
-        )
-        .unwrap();
+        ) {
+            Ok(c) => c,
+            Err(e) => return Err(Error::EthAbiErrorSerdeJson{}),
+        };
 
         let result = contract
             .call(&function_name, input, self.accounts[0], opts)
-            .wait()
-            .unwrap();
+            .wait()?;
 
         Ok(result.to_string())
     }
@@ -64,20 +72,21 @@ impl SideChainService {
     where
         T: Tokenize,
     {
-        let (_eloop, transport) = web3::transports::Http::new(&self.side_chain_addr).unwrap();
+        let (_eloop, transport) = web3::transports::Http::new(&self.side_chain_addr)?;
         let web3client = web3::Web3::new(transport);
 
-        let contract = Contract::from_json(
+        let contract = match Contract::from_json(
             web3client.eth(),
             self.contract_addr,
             include_bytes!("../build/ThemisPolicyContract.abi"), //REFACTOR
-        )
-        .unwrap();
+        ) {
+            Ok(c) => c,
+            Err(e) => return Err(Error::EthAbiErrorSerdeJson{}),
+        };
 
         let points: (U256, U256, U256, U256) = contract
             .query(&function_name, input, self.accounts[0], opts, None)
-            .wait()
-            .unwrap();
+            .wait()?;
 
         Ok(points)
     }
