@@ -1,12 +1,13 @@
 extern crate sha2;
 
+use crate::errors::Error;
+
 use elgamal_bn::ciphertext::Ciphertext;
 use elgamal_bn::public::PublicKey;
 use sha2::{Digest, Sha256};
-use web3::types::{H256, U256};
+use web3::types::H256;
 
 use crate::{Point, Proof};
-use bn::{G1, Fq};
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
 
@@ -21,7 +22,7 @@ pub fn encode_proof_decryption(input: &[String; 5]) -> Result<Proof, ()> {
     Ok(proof)
 }
 
-pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Point>, ()> {
+pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Point>, Error> {
     let encoded_input: Vec<Point> = input
         .into_iter()
         .map(|x| {
@@ -45,18 +46,18 @@ pub fn encode_client_id(client_id: String) -> H256 {
     H256::from_slice(&hasher.result()[..])
 }
 
-pub fn decode_ciphertext(
-    raw_point: Point, 
-    pk: PublicKey
-) -> Result<Ciphertext, ()> {
-
+pub fn decode_ciphertext(raw_point: Point, pk: PublicKey) -> Result<Ciphertext, Error> {
     let encrypted_encoded = Ciphertext::from_dec_string(
-        ((raw_point[0].to_string(),
-         raw_point[1].to_string()),
-        (raw_point[2].to_string(),
-         raw_point[3].to_string())
-        ), pk
+        (
+            (raw_point[0].to_string(), raw_point[1].to_string()),
+            (raw_point[2].to_string(), raw_point[3].to_string()),
+        ),
+        pk,
     );
 
-     Ok(encrypted_encoded.unwrap()) // TODO: remove unwrap when error is public in bn crate
+    let encrypted_encoded = match encrypted_encoded {
+        Ok(e) => e,
+        Err(_) => return Err(Error::ElGamalConversionError{}),
+    };
+    Ok(encrypted_encoded)
 }

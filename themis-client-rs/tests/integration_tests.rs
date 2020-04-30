@@ -21,26 +21,19 @@ fn test_request_reward_computation_and_fetch_storage() {
         side_chain_addr.clone(),
         contract_addr.clone(),
         contract_abi_path,
-    );
+    ).unwrap();
 
     let (sk, pk) = generate_keys();
 
     //let mut csprng = thread_rng();
-    let interaction_vec = vec![
-        pk.encrypt(&G1::one()),
-        pk.encrypt(&G1::one()),
-    ];
+    let interaction_vec = vec![pk.encrypt(&G1::one()), pk.encrypt(&G1::one())];
 
     let client_id = "client_id".to_owned();
     let mut opts = Options::default();
     opts.gas = Some(web3::types::U256::from_dec_str("900000").unwrap());
 
-    let tx_receipt = request_reward_computation(
-        service.clone(),
-        client_id.clone(),
-        interaction_vec,
-        opts,
-    );
+    let tx_receipt =
+        request_reward_computation(service.clone(), client_id.clone(), interaction_vec, opts);
 
     assert!(!tx_receipt.is_err());
 
@@ -59,8 +52,5 @@ fn test_request_reward_computation_and_fetch_storage() {
 
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
 
-    assert_eq!(
-        decrypted_aggregate,
-        G1::one() +  G1::one() + G1::one(),
-    );
+    assert_eq!(decrypted_aggregate, G1::one() + G1::one() + G1::one(),);
 }
