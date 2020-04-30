@@ -1,0 +1,12 @@
+[package]
+name = "themis_client_ffi"
+version = "0.1.0"
+authors = ["gpestana <g6pestana@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+cxx = "0.2.1"
+themis_client = { path = "../" }  
+
+[build-dependencies]
+cxx = "0.2.1"
