@@ -10,15 +10,23 @@ use bn::{G1, Fq};
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
 
-// pub fn encode_proof_decryption(announcement: &G1, response: &Fq) -> Result<Proof, ()> {
-//     let encoded_input: Proof =
-// }
+pub fn encode_proof_decryption(input: &[String; 5]) -> Result<Proof, ()> {
+    let proof: Proof = [
+        serde_json::from_str(&format![r#""{}""#, input[0]]).unwrap(),
+        serde_json::from_str(&format![r#""{}""#, input[1]]).unwrap(),
+        serde_json::from_str(&format![r#""{}""#, input[2]]).unwrap(),
+        serde_json::from_str(&format![r#""{}""#, input[3]]).unwrap(),
+        serde_json::from_str(&format![r#""{}""#, input[4]]).unwrap(),
+    ];
+    Ok(proof)
+}
 
 pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Point>, ()> {
     let encoded_input: Vec<Point> = input
         .into_iter()
         .map(|x| {
-            let ((x0, x1), (y0, y1)) = x.get_points_hex_string();
+            // todo: handle these unwraps
+            let ((x0, x1), (y0, y1)) = x.get_points_hex_string().unwrap();
             let point: Point = [
                 serde_json::from_str(&format![r#""{}""#, x0]).unwrap(),
                 serde_json::from_str(&format![r#""{}""#, x1]).unwrap(),

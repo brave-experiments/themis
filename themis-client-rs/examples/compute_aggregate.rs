@@ -69,12 +69,13 @@ fn main() {
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
     let expected_aggregate = sk.decrypt(&aggregate);
 
-    // let tx_proof_receipt = submit_proof_decryption(
-    //     &service.clone(),
-    //     &client_id.clone(),
-    //     &interaction_vec,
-    //     &opts
-    // );
+    let proof_str = sk.proof_decryption_as_string(&encrypted_encoded, &decrypted_aggregate).unwrap();
+    let tx_proof_receipt = submit_proof_decryption(
+        &service.clone(),
+        &client_id.clone(),
+        &proof_str,
+        &opts
+    );
 
     assert_eq!(
         decrypted_aggregate,

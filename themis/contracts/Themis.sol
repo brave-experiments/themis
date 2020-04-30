@@ -11,6 +11,7 @@ contract ThemisPolicyContract {
     uint256 x1;
     uint256 y0;
     uint256 y1;
+    uint256[2] public_key;
   }
 
   struct PaymentRequests {
@@ -31,7 +32,7 @@ contract ThemisPolicyContract {
   // TODO: define constructor
   constructor() public {}
 
-  // public 
+  // TODO: only for checking
   function add_points_and_check(
     uint256[2][3] memory input
   ) payable public returns (uint256[2] memory) {
@@ -42,7 +43,7 @@ contract ThemisPolicyContract {
     return [input[0][0], input[0][1]];
 
   }
-  // public
+
 
   function calculate_aggregate_mock(
     uint256[4][length_policies] memory _input, 
@@ -51,9 +52,21 @@ contract ThemisPolicyContract {
   
     return true;
   }
+  // public
+  function verify_proof(
+    uint256[5] memory input , 
+    bytes32 client_id
+  ) payable public returns (bool) {
+    // begins fetching the client's aggregate
+    uint256[4] memory client_aggregate = fetch_encrypted_aggregate_array(client_id);
+    uint256[2] memory client_pk = fetch_public_key(client_id);
+
+    return true;
+  }
 
   function calculate_aggregate(
     uint256[4][length_policies] memory input, 
+    uint256[2] memory public_key,
     bytes32 client_id
   //) payable public returns (uint256[4] memory) {
     ) payable public returns (bool) {
@@ -72,15 +85,23 @@ contract ThemisPolicyContract {
       x0: aggregate[0], 
       x1: aggregate[1], 
       y0: aggregate[2], 
-      y1: aggregate[3]
+      y1: aggregate[3], 
+      public_key: public_key
     });
     aggregate_storage[client_id] = enc_aggr;
 
     return true;
   }
 
+  function fetch_encrypted_aggregate_array(bytes32 client_id) public view returns (uint256[4] memory) {
+    return [aggregate_storage[client_id].x0, aggregate_storage[client_id].x1, aggregate_storage[client_id].y0, aggregate_storage[client_id].y1];
+  }
   function fetch_encrypted_aggregate(bytes32 client_id) public view returns (uint256, uint256, uint256, uint256) {
       return  (aggregate_storage[client_id].x0, aggregate_storage[client_id].x1, aggregate_storage[client_id].y0, aggregate_storage[client_id].y1);
+  }
+
+  function fetch_public_key(bytes32 client_id) public view returns (uint256[2] memory ) {
+    return aggregate_storage[client_id].public_key;
   }
 
   function request_payment(

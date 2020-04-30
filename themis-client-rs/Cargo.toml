@@ -7,8 +7,8 @@ edition = "2018"
 [dependencies]
 web3 = "0.10.0"
 ethabi = "12.0.0"
-elgamal_bn = { git = "https://github.com/brave-experiments/elgamal_bn" }
-#elgamal_bn = {path = "../../elgamal_bn"}
+#elgamal_bn = { git = "https://github.com/brave-experiments/elgamal_bn" }
+elgamal_bn = {path = "../../elgamal_bn"}
 bn = {git = "https://github.com/paritytech/bn"}
 rand = {version = "0.5", default-features = true}
 hex = "0.4.2"
