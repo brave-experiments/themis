@@ -7,7 +7,7 @@ use web3::contract::Options;
 
 use bn::{Fq, Fr, Group, G1};
 use elgamal_bn::ciphertext::Ciphertext;
-use elgamal_bn::public::PublicKey;
+use elgamal_bn::public::{PublicKey, get_point_as_hex_str, get_scalar_as_hex_str};
 use rand::thread_rng;
 
 fn main() {
@@ -49,12 +49,12 @@ fn main() {
         client_id.clone(),
         pk,
         interaction_vec.clone(),
-        opts,
+        opts.clone(),
     );
 
     assert!(!tx_receipt.is_err());
 
-    let result = fetch_aggregate_storage(service, client_id, Options::default());
+    let result = fetch_aggregate_storage(service.clone(), client_id.clone(), Options::default());
 
     assert!(!result.is_err());
     let tuple = result.unwrap();
@@ -71,4 +71,32 @@ fn main() {
     let expected_aggregate = sk.decrypt(&aggregate);
 
     assert_eq!(decrypted_aggregate, expected_aggregate,);
+
+    let proof_dec = sk.proof_decryption_as_string(&encrypted_encoded,&decrypted_aggregate).unwrap();
+
+    println!("Public Key hexadecimal: {:?}", pk.get_point_hex_string().unwrap());
+
+    println!("Plaintext hexadecimal: {:?}, {:?}", proof_dec[0], proof_dec[1]);
+
+    println!("Ciphertext hexadecimal: {:?}", encrypted_encoded.get_points_hex_string());
+
+    println!("Announcement G: {:?}, {:?}", proof_dec[2], proof_dec[3]);
+    println!("Announcement Ctxt: {:?}, {:?}", proof_dec[4], proof_dec[5]);
+    println!("Response: {:?}", proof_dec[6]);
+
+    let tx_receipt_proof = submit_proof_decryption(
+        &service,
+        &client_id,
+        &proof_dec,
+        &opts,
+    );
+
+    assert!(!tx_receipt_proof.is_err());
+
+    let proof_result = fetch_proof_verification(&service, &client_id, &Options::default());
+
+    assert!(!proof_result.is_err());
+    let success = proof_result.unwrap();
+
+    println!("Proof verified correctly: {:?}", success);
 }

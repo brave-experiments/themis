@@ -114,9 +114,9 @@
       "constant": false,
       "inputs": [
         {
-          "internalType": "uint256[5]",
+          "internalType": "uint256[7]",
           "name": "input",
-          "type": "uint256[5]"
+          "type": "uint256[7]"
         },
         {
           "internalType": "bytes32",
@@ -124,7 +124,53 @@
           "type": "bytes32"
         }
       ],
-      "name": "verify_proof",
+      "name": "submit_proof_decryption",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256[4]",
+          "name": "ciphertext",
+          "type": "uint256[4]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "plaintext",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "public_key",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "announcement_g",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "announcement_ctx",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "response",
+          "type": "uint256"
+        }
+      ],
+      "name": "check_proof",
       "outputs": [
         {
           "internalType": "bool",
@@ -239,6 +285,27 @@
           "internalType": "uint256[2]",
           "name": "",
           "type": "uint256[2]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "client_id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "fetch_proof_verification",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
         }
       ],
       "payable": false,

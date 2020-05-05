@@ -20,12 +20,6 @@ contract ThemisPolicyContract {
     uint256[2] proof_correct_decryption;
     bool valid;
   }
-
-  struct ProofCorrectDecryption{
-        uint256[2] announcement_g; 
-        uint256[2] announcement_ctx;
-        uint256 response;
-    }
     
     struct EcPoint{
         uint256 x_coord; 
@@ -93,7 +87,7 @@ contract ThemisPolicyContract {
   // }
 
   // public
-  function verify_proof(
+  function submit_proof_decryption(
     uint256[7] memory input, 
     bytes32 client_id
   ) payable public returns (bool) {
@@ -105,7 +99,7 @@ contract ThemisPolicyContract {
     uint256[2] memory announcement_ctx = [input[4], input[5]];
     uint256 response = input[6];
 
-    bool proof_verification = verify_checks(
+    bool proof_verification = check_proof(
       client_aggregate, 
       plaintext, 
       client_pk, 
@@ -119,7 +113,7 @@ contract ThemisPolicyContract {
     return true;
   }
 
-  function verify_checks(
+  function check_proof(
         uint256[4] memory ciphertext,
         uint256[2] memory plaintext, 
         uint256[2] memory public_key,
@@ -226,6 +220,10 @@ contract ThemisPolicyContract {
 
   function fetch_public_key(bytes32 client_id) public view returns (uint256[2] memory ) {
     return aggregate_storage[client_id].public_key;
+  }
+
+  function fetch_proof_verification(bytes32 client_id) public view returns (bool) {
+    return proof_verification_storage[client_id];
   }
 
   function request_payment(
