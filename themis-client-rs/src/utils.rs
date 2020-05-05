@@ -2,10 +2,13 @@ extern crate sha2;
 
 use crate::errors::Error;
 
+use bn::{Group, G1, Fr};
 use elgamal_bn::ciphertext::Ciphertext;
 use elgamal_bn::public::PublicKey;
 use sha2::{Digest, Sha256};
+
 use web3::types::H256;
+use web3::contract::Options;
 
 use crate::{Ctxt, Proof, Point};
 
@@ -34,6 +37,7 @@ pub fn encode_public_key(input: PublicKey) -> Result<Point, Error> {
     Ok(pk_point)
 }
 
+// TODO: Handle unwrap() embeeded in the map()
 pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Ctxt>, Error> {
     let encoded_input: Vec<Ctxt> = input
         .into_iter()
@@ -72,4 +76,20 @@ pub fn decode_ciphertext(raw_point: Ctxt, pk: PublicKey) -> Result<Ciphertext, E
         Err(_) => return Err(Error::ElGamalConversionError{}),
     };
     Ok(encrypted_encoded)
+}
+
+pub fn default_options() -> Options {
+    let mut opts = Options::default();
+    opts.gas = Some(web3::types::U256::from_dec_str("900000").unwrap());
+    opts
+}
+
+// TODO: Handle unwrap() embeeded in the map()
+pub fn encrypt_input(input: Vec<u8>, pk: PublicKey) -> Result<Vec<Ciphertext>, Error> {
+    let enc_input = input.into_iter().map(|x| {
+        let string_input = x.to_string();
+        pk.encrypt(&(G1::one() * Fr::from_str(&string_input).unwrap()))
+    }).collect();
+
+    Ok(enc_input)
 }
