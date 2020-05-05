@@ -21,14 +21,15 @@ use web3::types::U256;
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
 pub const POLICY_SIZE: usize = 2;
 
-pub type Point = [U256; 4];
+pub type Ctxt = [U256; 4];
+pub type Point = [U256; 2];
 // two points and one scalar
-pub type Proof = [U256; 5];
+pub type Proof = [U256; 7];
 
 pub fn submit_proof_decryption(
     service: &SideChainService,
     client_id: &String,
-    input: &[String; 5],
+    input: &[String; 7],
     opts: &Options,
 ) -> Result<String, ()> {
     let function_name = "submit_proof_decryption".to_owned();
@@ -45,22 +46,37 @@ pub fn submit_proof_decryption(
     Ok(result.to_string())
 }
 
+pub fn fetch_proof_verification(
+    service: &SideChainService,
+    client_id: &String,
+    opts: &Options,
+) -> Result<String, Error> {
+    let function_name = "fetch_proof_verification".to_string();
+
+    let client_id = utils::encode_client_id(client_id.clone());
+
+    let result = service.query_bool_function_remote(&function_name, client_id, &opts)?;
+    Ok(result.to_string())
+}
+
 pub fn request_reward_computation(
     service: SideChainService,
     client_id: String,
+    public_key: PublicKey,
     input: Vec<Ciphertext>,
     opts: Options,
 ) -> Result<String, Error> {
     let function_name = "calculate_aggregate".to_string();
     let encoded_input_raw = crate::utils::encode_input_ciphertext(input)?;
 
-    let mut encoded_input: [Point; POLICY_SIZE] = [Point::default(); POLICY_SIZE];
+    let mut encoded_input: [Ctxt; POLICY_SIZE] = [Ctxt::default(); POLICY_SIZE];
     for i in 0..encoded_input_raw.len() {
         encoded_input[i] = encoded_input_raw[i];
     }
+    let encoded_pk = utils::encode_public_key(public_key)?;
     let client_id = utils::encode_client_id(client_id);
 
-    let result = service.call_function_remote(function_name, (encoded_input, client_id), opts)?;
+    let result = service.call_function_remote(function_name, (encoded_input, encoded_pk, client_id), opts)?;
 
     Ok(result.to_string())
 }
