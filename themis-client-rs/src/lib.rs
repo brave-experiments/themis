@@ -13,7 +13,6 @@ use elgamal_bn::ciphertext::Ciphertext;
 use elgamal_bn::private::SecretKey;
 use elgamal_bn::public::PublicKey;
 
-use bn::{Fq, G1};
 use rand::thread_rng;
 use web3::contract::Options;
 use web3::types::U256;
@@ -50,13 +49,13 @@ pub fn fetch_proof_verification(
     service: &SideChainService,
     client_id: &String,
     opts: &Options,
-) -> Result<String, Error> {
+) -> Result<bool, Error> {
     let function_name = "fetch_proof_verification".to_string();
 
     let client_id = utils::encode_client_id(client_id.clone());
 
     let result = service.query_bool_function_remote(&function_name, client_id, &opts)?;
-    Ok(result.to_string())
+    Ok(result)
 }
 
 pub fn request_reward_computation(

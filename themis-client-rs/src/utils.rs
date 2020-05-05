@@ -8,7 +8,6 @@ use sha2::{Digest, Sha256};
 use web3::types::H256;
 
 use crate::{Ctxt, Proof, Point};
-use std::fmt::Pointer;
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
 

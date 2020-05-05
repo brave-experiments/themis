@@ -57,7 +57,6 @@ contract ThemisPolicyContract {
 
   }
 
-
   function calculate_aggregate_mock(
     uint256[4][length_policies] memory _input, 
     bytes32 _client_id
@@ -65,26 +64,6 @@ contract ThemisPolicyContract {
   
     return true;
   }
-
-  // // function to verify correctness of hash equality
-  // function verify_hash_comp(
-  //   uin256[2] product_rust
-  // ) payable public returns (bool) {
-  //   uint256[2] generator = [uint256(1), uint256(2)];
-
-  //   bytes32 hashed_keccak256 = keccak256(abi.encode(
-  //           uint256(0x25d59efa46fb42cde7a8bf1a15cb2df1e6ca3f9d4864cd94cb2e76e4b715050c), 
-  //           uint256(0x0ceaa8fbb57178f608d24c5f29f8883fa6ebc0a26115ae3569138222c2af1240)
-  //           ));
-
-  //   uint256 scalar = IntegerHash(uint256(hashed_keccak256));
-
-  //   uint256[2] product_solidity = _bn128_multiply([generator[0], generator[1], scalar]);
-
-  //   require()
-
-  //   return true;
-  // }
 
   // public
   function submit_proof_decryption(
@@ -210,7 +189,7 @@ contract ThemisPolicyContract {
     return true;
   }
 
-  // supposed to replace `fetch_encrypted_aggregate` at some point
+  // supposed to replace `fetch_encrypted_aggregate` at some point. I like more uint256[4] than (.,.,.,.)
   function fetch_encrypted_aggregate_array(bytes32 client_id) public view returns (uint256[4] memory) {
     return [aggregate_storage[client_id].x0, aggregate_storage[client_id].x1, aggregate_storage[client_id].y0, aggregate_storage[client_id].y1];
   }

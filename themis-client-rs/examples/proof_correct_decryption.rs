@@ -5,10 +5,8 @@ use themis_client::*;
 
 use web3::contract::Options;
 
-use bn::{Fq, Fr, Group, G1};
+use bn::{Fr, Group, G1};
 use elgamal_bn::ciphertext::Ciphertext;
-use elgamal_bn::public::{PublicKey, get_point_as_hex_str, get_scalar_as_hex_str};
-use rand::thread_rng;
 
 fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
@@ -34,7 +32,7 @@ fn main() {
     let multiplied_interactions: Vec<Ciphertext> = interaction_vec
         .clone()
         .into_iter()
-        .zip(policy_vector.into_iter())
+        .zip(policy_vector.iter())
         .map(|(x, &y)| x * y)
         .collect();
 
@@ -74,16 +72,6 @@ fn main() {
 
     let proof_dec = sk.proof_decryption_as_string(&encrypted_encoded,&decrypted_aggregate).unwrap();
 
-    println!("Public Key hexadecimal: {:?}", pk.get_point_hex_string().unwrap());
-
-    println!("Plaintext hexadecimal: {:?}, {:?}", proof_dec[0], proof_dec[1]);
-
-    println!("Ciphertext hexadecimal: {:?}", encrypted_encoded.get_points_hex_string());
-
-    println!("Announcement G: {:?}, {:?}", proof_dec[2], proof_dec[3]);
-    println!("Announcement Ctxt: {:?}, {:?}", proof_dec[4], proof_dec[5]);
-    println!("Response: {:?}", proof_dec[6]);
-
     let tx_receipt_proof = submit_proof_decryption(
         &service,
         &client_id,
@@ -93,10 +81,7 @@ fn main() {
 
     assert!(!tx_receipt_proof.is_err());
 
-    let proof_result = fetch_proof_verification(&service, &client_id, &Options::default());
+    let proof_result = fetch_proof_verification(&service, &client_id, &Options::default()).unwrap();
 
-    assert!(!proof_result.is_err());
-    let success = proof_result.unwrap();
-
-    println!("Proof verified correctly: {:?}", success);
+    assert!(proof_result);
 }

@@ -286,6 +286,7 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 [[package]]
 name = "elgamal_bn"
 version = "0.1.0"
+source = "git+https://github.com/brave-experiments/elgamal_bn#b1bcd24be0b4d7e4881cbc9734fbad53afe25cd9"
 dependencies = [
  "bincode",
  "bn",
