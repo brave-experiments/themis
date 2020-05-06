@@ -20,7 +20,7 @@ use web3::types::U256;
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
 pub const POLICY_SIZE: usize = 2;
 
-pub type Ctxt = [U256; 4];
+pub type CiphertextSolidity = [U256; 4];
 pub type Point = [U256; 2];
 // two points and one scalar
 pub type Proof = [U256; 7];
@@ -68,7 +68,7 @@ pub fn request_reward_computation(
     let function_name = "calculate_aggregate".to_string();
     let encoded_input_raw = crate::utils::encode_input_ciphertext(input)?;
 
-    let mut encoded_input: [Ctxt; POLICY_SIZE] = [Ctxt::default(); POLICY_SIZE];
+    let mut encoded_input: [CiphertextSolidity; POLICY_SIZE] = [CiphertextSolidity::default(); POLICY_SIZE];
     for i in 0..encoded_input_raw.len() {
         encoded_input[i] = encoded_input_raw[i];
     }

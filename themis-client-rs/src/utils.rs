@@ -7,7 +7,7 @@ use elgamal_bn::public::PublicKey;
 use sha2::{Digest, Sha256};
 use web3::types::H256;
 
-use crate::{Ctxt, Proof, Point};
+use crate::{CiphertextSolidity, Proof, Point};
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
 
@@ -34,13 +34,13 @@ pub fn encode_public_key(input: PublicKey) -> Result<Point, Error> {
     Ok(pk_point)
 }
 
-pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<Ctxt>, Error> {
-    let encoded_input: Vec<Ctxt> = input
+pub fn encode_input_ciphertext(input: Vec<Ciphertext>) -> Result<Vec<CiphertextSolidity>, Error> {
+    let encoded_input: Vec<CiphertextSolidity> = input
         .into_iter()
         .map(|x| {
             // todo: handle these unwraps
             let ((x0, x1), (y0, y1)) = x.get_points_hex_string().unwrap();
-            let point: Ctxt = [
+            let point: CiphertextSolidity = [
                 serde_json::from_str(&format![r#""{}""#, x0]).unwrap(),
                 serde_json::from_str(&format![r#""{}""#, x1]).unwrap(),
                 serde_json::from_str(&format![r#""{}""#, y0]).unwrap(),
@@ -58,7 +58,7 @@ pub fn encode_client_id(client_id: String) -> H256 {
     H256::from_slice(&hasher.result()[..])
 }
 
-pub fn decode_ciphertext(raw_point: Ctxt, pk: PublicKey) -> Result<Ciphertext, Error> {
+pub fn decode_ciphertext(raw_point: CiphertextSolidity, pk: PublicKey) -> Result<Ciphertext, Error> {
     let encrypted_encoded = Ciphertext::from_dec_string(
         (
             (raw_point[0].to_string(), raw_point[1].to_string()),
