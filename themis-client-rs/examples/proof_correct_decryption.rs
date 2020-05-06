@@ -5,10 +5,8 @@ use themis_client::*;
 
 use web3::contract::Options;
 
-use bn::{Fq, Fr, Group, G1};
+use bn::{Fr, Group, G1};
 use elgamal_bn::ciphertext::Ciphertext;
-use elgamal_bn::public::PublicKey;
-use rand::thread_rng;
 
 fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
@@ -34,7 +32,7 @@ fn main() {
     let multiplied_interactions: Vec<Ciphertext> = interaction_vec
         .clone()
         .into_iter()
-        .zip(policy_vector.into_iter())
+        .zip(policy_vector.iter())
         .map(|(x, &y)| x * y)
         .collect();
 
@@ -49,12 +47,12 @@ fn main() {
         client_id.clone(),
         pk,
         interaction_vec.clone(),
-        opts,
+        opts.clone(),
     );
 
     assert!(!tx_receipt.is_err());
 
-    let result = fetch_aggregate_storage(service, client_id, Options::default());
+    let result = fetch_aggregate_storage(service.clone(), client_id.clone(), Options::default());
 
     assert!(!result.is_err());
     let tuple = result.unwrap();
@@ -71,4 +69,19 @@ fn main() {
     let expected_aggregate = sk.decrypt(&aggregate);
 
     assert_eq!(decrypted_aggregate, expected_aggregate,);
+
+    let proof_dec = sk.proof_decryption_as_string(&encrypted_encoded,&decrypted_aggregate).unwrap();
+
+    let tx_receipt_proof = submit_proof_decryption(
+        &service,
+        &client_id,
+        &proof_dec,
+        &opts,
+    );
+
+    assert!(!tx_receipt_proof.is_err());
+
+    let proof_result = fetch_proof_verification(&service, &client_id, &Options::default()).unwrap();
+
+    assert!(proof_result);
 }

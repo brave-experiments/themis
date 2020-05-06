@@ -42,7 +42,7 @@ fn test_request_reward_computation_and_fetch_storage() {
     assert!(!result.is_err());
     let tuple = result.unwrap();
 
-    let encrypted_point: Point = [tuple.0, tuple.1, tuple.2, tuple.3];
+    let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
 
     // TODO: refactor to utils
     let encrypted_encoded = utils::decode_ciphertext(encrypted_point, pk);

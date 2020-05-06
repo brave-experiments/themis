@@ -49,7 +49,7 @@ impl SideChainService {
         let contract = match Contract::from_json(
             web3client.eth(),
             self.contract_addr,
-            include_bytes!("../build/ThemisPolicyContract.abi"), //REFACTOR
+            include_bytes!("../build/ThemisPolicyContract.abi"), // todo: REFACTOR
         ) {
             Ok(c) => c,
             Err(_) => return Err(Error::EthAbiErrorSerdeJson{}),
@@ -60,6 +60,35 @@ impl SideChainService {
             .wait()?;
 
         Ok(result.to_string())
+    }
+
+    // todo: refactor and merge with either the above or below
+    pub fn query_bool_function_remote<T>(
+        &self,
+        function_name: &String,
+        input: T,
+        opts: &Options,
+    ) -> Result<bool, Error>
+    where
+        T: Tokenize,
+    {
+        let (_eloop, transport) = web3::transports::Http::new(&self.side_chain_addr)?;
+        let web3client = web3::Web3::new(transport);
+
+        let contract = match Contract::from_json(
+            web3client.eth(),
+            self.contract_addr,
+            include_bytes!("../build/ThemisPolicyContract.abi"), //REFACTOR
+        ) {
+            Ok(c) => c,
+            Err(_e) => return Err(Error::EthAbiErrorSerdeJson{}),
+        };
+
+        let check: bool = contract
+            .query(&function_name, input, self.accounts[0].clone(), opts.clone(), None)
+            .wait()?;
+
+        Ok(check)
     }
 
     // #TODO: refactor and merge with call_function_remote
