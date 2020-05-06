@@ -52,7 +52,7 @@ impl SideChainService {
             include_bytes!("../build/ThemisPolicyContract.abi"), // todo: REFACTOR
         ) {
             Ok(c) => c,
-            Err(_e) => return Err(Error::EthAbiErrorSerdeJson{}),
+            Err(_) => return Err(Error::EthAbiErrorSerdeJson{}),
         };
 
         let result = contract
@@ -110,7 +110,7 @@ impl SideChainService {
             include_bytes!("../build/ThemisPolicyContract.abi"), //REFACTOR
         ) {
             Ok(c) => c,
-            Err(_e) => return Err(Error::EthAbiErrorSerdeJson{}),
+            Err(_) => return Err(Error::EthAbiErrorSerdeJson{}),
         };
 
         let points: (U256, U256, U256, U256) = contract
