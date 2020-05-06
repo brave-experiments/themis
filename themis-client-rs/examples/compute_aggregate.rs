@@ -13,13 +13,11 @@ use rand::thread_rng;
 fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
     let contract_addr = "44D46221f1ca0bBEDBd5aD2b1e660794b9767afd".to_owned();
-    let contract_abi_path = "../build/ThemisPolicyContract.abi".to_owned();
+    let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"];
 
-    let service = SideChainService::new(
-        side_chain_addr.clone(),
-        contract_addr.clone(),
-        contract_abi_path,
-    ).unwrap();
+    let service =
+        SideChainService::new(side_chain_addr.clone(), contract_addr.clone(), contract_abi)
+            .unwrap();
 
     let (sk, pk) = generate_keys();
     let ctxt_one = pk.encrypt(&G1::one());

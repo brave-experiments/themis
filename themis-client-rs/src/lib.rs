@@ -33,8 +33,7 @@ pub fn submit_proof_decryption(
 ) -> Result<String, ()> {
     let function_name = "submit_proof_decryption".to_owned();
 
-    let encoded_input = crate::utils::encode_proof_decryption(&input)
-        .unwrap();
+    let encoded_input = crate::utils::encode_proof_decryption(&input).unwrap();
 
     let client_id = utils::encode_client_id(client_id.clone());
 
@@ -68,14 +67,19 @@ pub fn request_reward_computation(
     let function_name = "calculate_aggregate".to_string();
     let encoded_input_raw = crate::utils::encode_input_ciphertext(input)?;
 
-    let mut encoded_input: [CiphertextSolidity; POLICY_SIZE] = [CiphertextSolidity::default(); POLICY_SIZE];
+    let mut encoded_input: [CiphertextSolidity; POLICY_SIZE] =
+        [CiphertextSolidity::default(); POLICY_SIZE];
     for i in 0..encoded_input_raw.len() {
         encoded_input[i] = encoded_input_raw[i];
     }
     let encoded_pk = utils::encode_public_key(public_key)?;
     let client_id = utils::encode_client_id(client_id);
 
-    let result = service.call_function_remote(function_name, (encoded_input, encoded_pk, client_id), opts)?;
+    let result = service.call_function_remote(
+        function_name,
+        (encoded_input, encoded_pk, client_id),
+        opts,
+    )?;
 
     Ok(result.to_string())
 }

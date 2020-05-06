@@ -37,8 +37,9 @@ impl From<()> for Error {
 impl From<web3::contract::Error> for Error {
     fn from(e: web3::contract::Error) -> Error {
         match e {
-            web3::contract::Error::InvalidOutputType(_) => 
-                Error::Web3ErrorContractInvalidOutputType,
+            web3::contract::Error::InvalidOutputType(_) => {
+                Error::Web3ErrorContractInvalidOutputType
+            }
             web3::contract::Error::Abi(_) => Error::Web3ErrorContractAbi,
             web3::contract::Error::Api(_) => Error::Web3ErrorContractApi,
         }
@@ -48,9 +49,9 @@ impl From<web3::contract::Error> for Error {
 impl From<web3::error::Error> for Error {
     fn from(e: web3::error::Error) -> Error {
         match e {
-            web3::error::Error::Rpc(_)  => Error::Web3ErrorRpc,
-            web3::error::Error::Io(_)  => Error::Web3ErrorIo,
-            web3::error::Error::Unreachable  => Error::Web3ErrorUnreachable,
+            web3::error::Error::Rpc(_) => Error::Web3ErrorRpc,
+            web3::error::Error::Io(_) => Error::Web3ErrorIo,
+            web3::error::Error::Unreachable => Error::Web3ErrorUnreachable,
             web3::error::Error::Decoder(_) => Error::Web3ErrorDecoder,
             web3::error::Error::InvalidResponse(_) => Error::Web3ErrorInvalidResponse,
             web3::error::Error::Transport(_) => Error::Web3ErrorTransport,
@@ -58,7 +59,6 @@ impl From<web3::error::Error> for Error {
         }
     }
 }
-
 
 impl From<ethabi::Error> for Error {
     fn from(e: ethabi::Error) -> Error {
@@ -82,4 +82,3 @@ impl From<rustc_hex::FromHexError> for Error {
         }
     }
 }
-

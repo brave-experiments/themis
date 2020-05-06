@@ -2,15 +2,15 @@ extern crate sha2;
 
 use crate::errors::Error;
 
-use bn::{Group, G1, Fr};
+use bn::{Fr, Group, G1};
 use elgamal_bn::ciphertext::Ciphertext;
 use elgamal_bn::public::PublicKey;
 use sha2::{Digest, Sha256};
 
-use web3::types::H256;
 use web3::contract::Options;
+use web3::types::H256;
 
-use crate::{CiphertextSolidity, Proof, Point};
+use crate::{CiphertextSolidity, Point, Proof};
 
 pub type EncryptedInteractions = Vec<Vec<String>>;
 
@@ -28,7 +28,6 @@ pub fn encode_proof_decryption(input: &[String; 7]) -> Result<Proof, ()> {
 }
 
 pub fn encode_public_key(input: PublicKey) -> Result<Point, Error> {
-
     let (x, y) = input.get_point_hex_string().unwrap();
     let pk_point: Point = [
         serde_json::from_str(&format![r#""{}""#, x]).unwrap(),
@@ -61,7 +60,10 @@ pub fn encode_client_id(client_id: String) -> H256 {
     H256::from_slice(&hasher.result()[..])
 }
 
-pub fn decode_ciphertext(raw_point: CiphertextSolidity, pk: PublicKey) -> Result<Ciphertext, Error> {
+pub fn decode_ciphertext(
+    raw_point: CiphertextSolidity,
+    pk: PublicKey,
+) -> Result<Ciphertext, Error> {
     let encrypted_encoded = Ciphertext::from_dec_string(
         (
             (raw_point[0].to_string(), raw_point[1].to_string()),
@@ -72,7 +74,7 @@ pub fn decode_ciphertext(raw_point: CiphertextSolidity, pk: PublicKey) -> Result
 
     let encrypted_encoded = match encrypted_encoded {
         Ok(e) => e,
-        Err(_) => return Err(Error::ElGamalConversionError{}),
+        Err(_) => return Err(Error::ElGamalConversionError {}),
     };
     Ok(encrypted_encoded)
 }
@@ -85,10 +87,26 @@ pub fn default_options() -> Options {
 
 // TODO: Handle unwrap() embeeded in the map()
 pub fn encrypt_input(input: Vec<u8>, pk: PublicKey) -> Result<Vec<Ciphertext>, Error> {
-    let enc_input = input.into_iter().map(|x| {
-        let string_input = x.to_string();
-        pk.encrypt(&(G1::one() * Fr::from_str(&string_input).unwrap()))
-    }).collect();
+    let enc_input = input
+        .into_iter()
+        .map(|x| {
+            let string_input = x.to_string();
+            pk.encrypt(&(G1::one() * Fr::from_str(&string_input).unwrap()))
+        })
+        .collect();
 
     Ok(enc_input)
+}
+
+pub fn recover_scalar(point: G1, k: u32) -> Result<Fr, Error> {
+    for i in 0..2u64.pow(k) {
+        let scalar = match Fr::from_str(&i.to_string()) {
+            Some(s) => s,
+            None => Fr::one(),
+        };
+        if (G1::one() * scalar) == point {
+            return Ok(scalar);
+        }
+    }
+    Err(Error::GeneralError)
 }
