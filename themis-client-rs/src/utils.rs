@@ -108,5 +108,6 @@ pub fn recover_scalar(point: G1, k: u32) -> Result<Fr, Error> {
             return Ok(scalar);
         }
     }
+    println!("Encryped scalar too long");
     Err(Error::GeneralError)
 }

@@ -7,13 +7,24 @@ use web3::contract::Options;
 
 use elgamal_bn::ciphertext::Ciphertext;
 
+use std::env;
 use bn::{Fr, Group, G1};
 use rand::thread_rng;
 
 #[test]
 fn test_request_reward_computation_and_fetch_storage() {
-    let side_chain_addr = "http://127.0.0.1:9545".to_owned();
-    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
+    let side_chain_addr = match env::var("SIDECHAIN_ADDR") {
+        Ok(addr) => addr.to_owned(),
+        Err(_) => {
+            println!("Using local sidechain addr.");
+            "http://127.0.0.1:9545".to_owned()
+        }
+    };
+    let contract_addr = match env::var("CONTRACT_ADDR") {
+        Ok(addr) => addr.to_owned(),
+        Err(_) => panic!("No contract address set (define CONTRACT_ADDR env var)")
+    };
+
     let contract_abi = include_bytes!["./ThemisPolicyContract_Test.abi"];
 
     let service =
@@ -37,7 +48,6 @@ fn test_request_reward_computation_and_fetch_storage() {
         opts,
     );
 
-    //tx_receipt.unwrap();
     assert!(!tx_receipt.is_err());
 
     let result = fetch_aggregate_storage(service, client_id, Options::default());
@@ -47,7 +57,6 @@ fn test_request_reward_computation_and_fetch_storage() {
 
     let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
 
-    // TODO: refactor to utils
     let encrypted_encoded = utils::decode_ciphertext(encrypted_point, pk);
     assert!(!encrypted_encoded.is_err());
 

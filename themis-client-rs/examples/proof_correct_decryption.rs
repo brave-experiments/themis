@@ -10,7 +10,7 @@ use elgamal_bn::ciphertext::Ciphertext;
 
 fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
-    let contract_addr = "44D46221f1ca0bBEDBd5aD2b1e660794b9767afd".to_owned();
+    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
     let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"];
 
     let service =
