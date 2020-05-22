@@ -50,6 +50,8 @@ fn test_request_reward_computation_and_fetch_storage() {
 
     assert!(!tx_receipt.is_err());
 
+    use std::{thread, time};
+    thread::sleep(time::Duration::from_secs(2));
     let result = fetch_aggregate_storage(service, client_id, Options::default());
 
     assert!(!result.is_err());

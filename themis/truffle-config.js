@@ -48,6 +48,22 @@ module.exports = {
       network_id: "*",       // Any network (default: none)
     },
 
+    // live network
+    live: {
+      host: "52.90.98.76",  
+      port: 22000,
+      network_id: "*",
+      // optional config values:
+      // gas
+      gasPrice: 0,
+      // from - default address to use for any transaction Truffle makes during migrations
+      // provider - web3 provider instance Truffle should use to talk to the Ethereum network.
+      //          - function that returns a web3 provider instance (see below.)
+      //          - if specified, host and port are ignored.
+      // skipDryRun: - true if you don't want to test run the migration locally before the actual migration (default is false)
+      // timeoutBlocks: - if a transaction is not mined, keep waiting for this number of blocks (default is 50)
+    },
+
     // Another network with more advanced options...
     advanced: {
       // port: 8777,             // Custom port
