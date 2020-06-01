@@ -1,7 +1,7 @@
 //pragma solidity >=0.4.22 <0.6.0;
 pragma solidity >=0.4.22 <0.7.0;
 
-contract ThemisPolicyContract {
+contract ThemisPolicyContract2 {
 
   uint constant length_policies = 2;
   uint256[length_policies] policies = [uint256(1), uint256(2)];

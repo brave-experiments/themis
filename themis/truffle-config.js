@@ -50,7 +50,7 @@ module.exports = {
 
     // live network
     live: {
-      host: "52.90.98.76",  
+      host: "54.235.4.109",
       port: 22000,
       network_id: "*",
       // optional config values:
