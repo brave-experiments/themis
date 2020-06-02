@@ -18,7 +18,7 @@ use web3::contract::Options;
 use web3::types::U256;
 
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
-pub const POLICY_SIZE: usize = 2;
+pub const POLICY_SIZE: usize = 128;
 
 pub type CiphertextSolidity = [U256; 4];
 pub type Point = [U256; 2];
@@ -74,6 +74,8 @@ pub fn request_reward_computation(
     }
     let encoded_pk = utils::encode_public_key(public_key)?;
     let client_id = utils::encode_client_id(client_id);
+
+    //println!("{:?}", client_id);
 
     let result = service.call_function_remote(
         function_name,

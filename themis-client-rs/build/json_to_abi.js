@@ -1,5 +1,6 @@
 const fs = require('fs');
 
-const contract = JSON.parse(fs.readFileSync('./ThemisPolicyContract.json', 'utf8'));
+var jsonPath = process.argv[2];
+const contract = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 console.log(JSON.stringify(contract.abi));

@@ -7,9 +7,10 @@ use web3::contract::Options;
 
 use elgamal_bn::ciphertext::Ciphertext;
 
-use std::env;
 use bn::{Fr, Group, G1};
 use rand::thread_rng;
+use rand::Rng;
+use std::env;
 
 #[test]
 fn test_request_reward_computation_and_fetch_storage() {
@@ -22,7 +23,7 @@ fn test_request_reward_computation_and_fetch_storage() {
     };
     let contract_addr = match env::var("CONTRACT_ADDR") {
         Ok(addr) => addr.to_owned(),
-        Err(_) => panic!("No contract address set (define CONTRACT_ADDR env var)")
+        Err(_) => panic!("No contract address set (define CONTRACT_ADDR env var)"),
     };
 
     let contract_abi = include_bytes!["./ThemisPolicyContract_Test.abi"];
@@ -33,12 +34,16 @@ fn test_request_reward_computation_and_fetch_storage() {
 
     let (sk, pk) = generate_keys();
 
-    //let mut csprng = thread_rng();
     let interaction_vec = vec![pk.encrypt(&G1::one()), pk.encrypt(&G1::one())];
 
-    let client_id = "client_id".to_owned();
+    let mut csprng = thread_rng();
+    let nonce = csprng.gen_range(0, 100000);
+    let nonce: String = nonce.to_string();
+    let client_id = "client_id".to_owned() + &nonce;
+
     let mut opts = Options::default();
     opts.gas = Some(web3::types::U256::from_dec_str("900000").unwrap());
+    //opts.gas = Some(web3::types::U256::from_dec_str("1600000").unwrap());
 
     let tx_receipt = request_reward_computation(
         service.clone(),
@@ -50,12 +55,18 @@ fn test_request_reward_computation_and_fetch_storage() {
 
     assert!(!tx_receipt.is_err());
 
+    // Waits for storage update
     use std::{thread, time};
-    thread::sleep(time::Duration::from_secs(2));
+    thread::sleep(time::Duration::from_secs(3));
+
+    println!("{:?}",  client_id);
+
     let result = fetch_aggregate_storage(service, client_id, Options::default());
 
     assert!(!result.is_err());
     let tuple = result.unwrap();
+
+    println!("{:?}", tuple);
 
     let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
 
