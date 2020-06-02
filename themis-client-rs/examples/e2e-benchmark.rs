@@ -26,7 +26,7 @@ fn main() {
 
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"]; // 2 ads
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_16ads.abi"];
-    let contract_abi = include_bytes!["../build/ThemisPolicyContract_128ads.abi"];
+    let contract_abi = include_bytes!["../build/ThemisPolicyContract_16ads.abi"];
     let service = SideChainService::new(
         side_chain_addr.clone(), contract_addr.clone(), contract_abi).unwrap();
 
@@ -37,8 +37,8 @@ fn main() {
 
     // generate interaction vector with `policy_vector_size` entries
     //let policy_vector_size = 2;
-    //let policy_vector_size = 16;
-    let policy_vector_size = 128;
+    let policy_vector_size = 16;
+    //let policy_vector_size = 128;
     let mut interaction_vec = vec![];
     for _i in 0..policy_vector_size {
         interaction_vec.push(pk.encrypt(&G1::one()));
@@ -99,7 +99,9 @@ fn main() {
         }
     };
 
-    assert_eq!(_scalar_aggregate, Fr::from_str("60").unwrap());
+    //assert_eq!(_scalar_aggregate, Fr::from_str("3").unwrap()); // 2ads
+    assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
+    //assert_eq!(_scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
 
     println!("Time elapsed: {:?} ({:?})", start_ts.elapsed(), client_id);
     //print!("{:?}, ", start_ts.elapsed().unwrap());
