@@ -16,10 +16,11 @@ use elgamal_bn::public::PublicKey;
 use rand::thread_rng;
 use web3::contract::Options;
 use web3::types::U256;
+use bn::Fr;
 
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
-//pub const POLICY_SIZE: usize = 2;
-pub const POLICY_SIZE: usize = 16;
+pub const POLICY_SIZE: usize = 2;
+// pub const POLICY_SIZE: usize = 16;
 //pub const POLICY_SIZE: usize = 128;
 
 pub type CiphertextSolidity = [U256; 4];
@@ -69,6 +70,7 @@ pub fn request_reward_computation(
     let function_name = "calculate_aggregate".to_string();
     let encoded_input_raw = crate::utils::encode_input_ciphertext(input)?;
 
+    // todo: take back
     let mut encoded_input: [CiphertextSolidity; POLICY_SIZE] =
         [CiphertextSolidity::default(); POLICY_SIZE];
     for i in 0..encoded_input_raw.len() {
@@ -92,8 +94,8 @@ pub fn fetch_aggregate_storage(
     service: SideChainService,
     client_id: String,
     opts: Options,
-) -> Result<(U256, U256, U256, U256), Error> {
-    let function_name = "fetch_encrypted_aggregate".to_string();
+) -> Result<[U256; 4], Error> {
+    let function_name = "fetch_encrypted_aggregate_array".to_string();
 
     let client_id = utils::encode_client_id(client_id);
 
@@ -102,8 +104,8 @@ pub fn fetch_aggregate_storage(
 }
 
 pub fn generate_keys() -> (SecretKey, PublicKey) {
-    let mut csprng = thread_rng();
-    let sk = SecretKey::new(&mut csprng);
+    // let mut csprng = thread_rng();
+    let sk = SecretKey::from(Fr::from_str("7").unwrap());
     let pk = PublicKey::from(&sk);
     (sk, pk)
 }

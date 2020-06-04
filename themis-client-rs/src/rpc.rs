@@ -96,7 +96,7 @@ impl<'a> SideChainService<'a> {
         function_name: String,
         input: T,
         opts: Options,
-    ) -> Result<(U256, U256, U256, U256), Error>
+    ) -> Result<[U256; 4], Error>
     where
         T: Tokenize,
     {
@@ -109,7 +109,7 @@ impl<'a> SideChainService<'a> {
                 Err(_) => return Err(Error::EthAbiErrorSerdeJson {}),
             };
 
-        let points: (U256, U256, U256, U256) = contract
+        let points: [U256; 4] = contract
             .query(&function_name, input, self.accounts[0], opts, None)
             .wait()?;
 
