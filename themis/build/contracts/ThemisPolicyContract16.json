@@ -30589,6 +30589,148 @@
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
   "networks": {
+    "3673": {
+      "events": {
+        "0x2214d5f796a5030b1f93bdad19cf57561590f164f5e74396c5981f6e99b4d601": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256[4]",
+              "name": "aggr",
+              "type": "uint256[4]"
+            }
+          ],
+          "name": "Aggregate",
+          "type": "event"
+        },
+        "0xfd88615721088dc1f5b54d8f22a12769ff690898e6013ce37f75fe3e9c6db541": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "DoneProof",
+          "type": "event"
+        },
+        "0x224c8d9ad1bbf0f44a61d7bd8e7e9049b1a320e04b047da9910945675c31ba43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "hashed",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Hash",
+          "type": "event"
+        },
+        "0xb8aeb9134ec47f3964c01c8a2ad29f486edb1d88d5a9f4324d0c560c749d0424": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256[4]",
+              "name": "input",
+              "type": "uint256[4]"
+            }
+          ],
+          "name": "Input",
+          "type": "event"
+        },
+        "0x75555b57034011bbbd2fb2318c0967d3afa8f32b5b934bd58a18402cdeb66377": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "int_hashed",
+              "type": "uint256"
+            }
+          ],
+          "name": "IntegerHash",
+          "type": "event"
+        },
+        "0xa4486ff1345dfc4d2e98d373fe975f5fd4dd6fd661a06077480183b37f7cfba9": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "StartSignal",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xB441014E4BE260DFDB0CB807eD6d1baa79ba0a7E",
+      "transactionHash": "0x4dc1e686ca4351e59a52b1cc66dfdce6b19d12919f04bd62b8640fbc0c791d2b"
+    },
+    "5777": {
+      "events": {
+        "0x2214d5f796a5030b1f93bdad19cf57561590f164f5e74396c5981f6e99b4d601": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256[4]",
+              "name": "aggr",
+              "type": "uint256[4]"
+            }
+          ],
+          "name": "Aggregate",
+          "type": "event"
+        },
+        "0xfd88615721088dc1f5b54d8f22a12769ff690898e6013ce37f75fe3e9c6db541": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "DoneProof",
+          "type": "event"
+        },
+        "0x224c8d9ad1bbf0f44a61d7bd8e7e9049b1a320e04b047da9910945675c31ba43": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "hashed",
+              "type": "bytes32"
+            }
+          ],
+          "name": "Hash",
+          "type": "event"
+        },
+        "0xb8aeb9134ec47f3964c01c8a2ad29f486edb1d88d5a9f4324d0c560c749d0424": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256[4]",
+              "name": "input",
+              "type": "uint256[4]"
+            }
+          ],
+          "name": "Input",
+          "type": "event"
+        },
+        "0x75555b57034011bbbd2fb2318c0967d3afa8f32b5b934bd58a18402cdeb66377": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "int_hashed",
+              "type": "uint256"
+            }
+          ],
+          "name": "IntegerHash",
+          "type": "event"
+        },
+        "0xa4486ff1345dfc4d2e98d373fe975f5fd4dd6fd661a06077480183b37f7cfba9": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "StartSignal",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xDfead5F426141f45E2c9c5d3896a6C0d6cEDeeA9",
+      "transactionHash": "0xd5b0caf780ee92669100db2ffb36bab00560602d95f6acca2e4281668f75ff80"
+    },
     "8363": {
       "events": {
         "0x2214d5f796a5030b1f93bdad19cf57561590f164f5e74396c5981f6e99b4d601": {
@@ -30657,12 +30799,12 @@
         }
       },
       "links": {},
-      "address": "0xC462ea33d401AEe02623E9a310B5a8B326323Eb0",
-      "transactionHash": "0x8c268ef3ad3677ab5050c5273bbb1fa0ae3fddb1684682726e9c26c2ce444272"
+      "address": "0xFcdc4a8F014db836922420591EC6ed32F9d85B24",
+      "transactionHash": "0xad8d50408ed977bbb1cae7a2a550021c0a2b4724dbd859b6b29034849b979262"
     }
   },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-06-01T21:20:23.355Z",
+  "updatedAt": "2020-07-02T16:10:39.202Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

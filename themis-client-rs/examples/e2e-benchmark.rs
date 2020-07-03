@@ -26,7 +26,7 @@ fn main() {
 
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"]; // 2 ads
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_16ads.abi"];
-    let contract_abi = include_bytes!["../build/ThemisPolicyContract_16ads.abi"];
+    let contract_abi = include_bytes!["../build/ThemisPolicyContract_128ads.abi"];
     let service = SideChainService::new(
         side_chain_addr.clone(), contract_addr.clone(), contract_abi).unwrap();
 
@@ -37,8 +37,8 @@ fn main() {
 
     // generate interaction vector with `policy_vector_size` entries
     //let policy_vector_size = 2;
-    let policy_vector_size = 16;
-    //let policy_vector_size = 128;
+    //let policy_vector_size = 16;
+    let policy_vector_size = 128;
     let mut interaction_vec = vec![];
     for _i in 0..policy_vector_size {
         interaction_vec.push(pk.encrypt(&G1::one()));
@@ -50,7 +50,6 @@ fn main() {
     let client_id = "client_id".to_string() + &rnd;
 
     let mut opts = Options::default();
-    //opts.gas = Some(web3::types::U256::from_dec_str("900000").unwrap());
     opts.gas = Some(web3::types::U256::from_dec_str("30000000").unwrap());
 
     let tx_receipt = request_reward_computation(
@@ -66,17 +65,17 @@ fn main() {
 
     // #TODO: replace with try-fail-try-again pattern
     use std::{thread, time};
-    thread::sleep(time::Duration::from_secs(2));
+    let delay = 10;
+    thread::sleep(time::Duration::from_secs(delay));
 
     let result = fetch_aggregate_storage(
         service, client_id.clone(), Options::default());
 
-    //println!("{:?}", result);
-
     let tuple = match result {
         Ok(r) => r,
-        Err(e) => {
-            println!("Error fetching aggregate storage: {:?}", e);
+        Err(_e) => {
+            //println!("Error fetching aggregate storage: {:?}", e);
+            println!(" # ");
             process::exit(0x1000);
         }
     };
@@ -84,8 +83,9 @@ fn main() {
     let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
     let encrypted_encoded = match utils::decode_ciphertext(encrypted_point, pk) {
         Ok(r) => r,
-        Err(e) => {
-            println!("Error decoding ciphertext: {:?}", e);
+        Err(_e) => {
+            //println!("Error decoding ciphertext: {:?}", e);
+            println!(" # ");
             process::exit(0x1000);
         }
     };
@@ -93,17 +93,18 @@ fn main() {
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
     let _scalar_aggregate = match utils::recover_scalar(decrypted_aggregate, 16) {
         Ok(r) => r,
-        Err(e) => {
-            println!("Error decrypting aggregate: {:?}", e);
+        Err(_e) => {
+            //println!("Error decrypting aggregate: {:?}", e);
+            println!(" # ");
             process::exit(0x1000);
         }
     };
 
     //assert_eq!(_scalar_aggregate, Fr::from_str("3").unwrap()); // 2ads
-    assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
-    //assert_eq!(_scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
+    //assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
+    assert_eq!(_scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
 
-    println!("Time elapsed: {:?} ({:?})", start_ts.elapsed(), client_id);
-    //print!("{:?}, ", start_ts.elapsed().unwrap());
+    //println!("Time elapsed: {:?} ({:?})", start_ts.elapsed(), client_id);
+    print!("{:?}, ", start_ts.elapsed().unwrap().as_secs_f64() - delay as f64);
 }
 
