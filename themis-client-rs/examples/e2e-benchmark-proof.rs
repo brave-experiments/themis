@@ -66,8 +66,8 @@ fn main() {
     tx_receipt.unwrap();
 
     use std::{thread, time};
-    let delay = 10;
-    thread::sleep(time::Duration::from_secs(delay));
+    let delay_2 = 10;
+    thread::sleep(time::Duration::from_secs(delay_1));
 
     let result = fetch_aggregate_storage(
         service.clone(), client_id.clone(), Options::default());
@@ -112,8 +112,11 @@ fn main() {
         };
 
     let tx_receipt_proof = submit_proof_decryption(&service, &client_id, &proof_dec, &opts);
-    assert!(!tx_receipt_proof.is_err());
+    tx_receipt_proof.unwrap();
 
+    let delay_2 = 5;
+    thread::sleep(time::Duration::from_secs(delay_2));
+    
     let _proof_result = match fetch_proof_verification(&service, &client_id, &Options::default()) {
         Ok(r) => r,
         Err(_e) => { 
@@ -129,5 +132,6 @@ fn main() {
     //assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
     assert_eq!(scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
 
-    print!("{:?}, ", start_ts.elapsed().unwrap().as_secs_f64() - delay as f64);
+    print!("{:?}, ", 
+        start_ts.elapsed().unwrap().as_secs_f64() - delay_1 as f64 - delay_2 as f64);
 }

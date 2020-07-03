@@ -10,7 +10,7 @@ CONTRACT_ADDR_128=6545EffDa763c2Bb1E7Fb63a09f32d1c1DEFf7fD # -> 128 ads
 # 2) e2e-benchmark with on-chain proof verification 
 #	cargo run --example e2e-benchmark-proof &
 
-for i in {1..5}
+for i in {1..50}
 do
 	SIDECHAIN_ADDR=http://34.224.100.113:22000 \
 	CONTRACT_ADDR=6545EffDa763c2Bb1E7Fb63a09f32d1c1DEFf7fD \
