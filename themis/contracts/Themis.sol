@@ -1,16 +1,17 @@
 //pragma solidity >=0.4.22 <0.6.0;
 pragma solidity >=0.4.22 <0.7.0;
 
-pragma experimental ABIEncoderV2;
-
 contract ThemisPolicyContract {
 
   Policy public policy_sc_address;
-  uint constant length_policies = 2;
+  uint constant initial_length = 512;
   uint256[] policies;
 
   struct EncryptedAggregate {
-    Ciphertext ctxt;
+    uint256 x0;
+    uint256 y0;
+    uint256 x1;
+    uint256 y1;
     uint256[2] public_key;
   }
 
@@ -100,24 +101,6 @@ contract ThemisPolicyContract {
         return check_1 && check_2;
   }
   
-  function _proof_check_1(
-        uint256[2] memory public_key,
-        uint256[2] memory announcement_g,
-        uint256 challenge,
-        uint256 response
-      ) private returns (bool) {
-        EcPoint memory pk = EcPoint(public_key[0], public_key[1]);
-        EcPoint memory generator = EcPoint(uint256(1), uint256(2));
-        
-        uint256[2] memory lhs_check_1 = _bn128_multiply([generator.x_coord, generator.y_coord, response]);
-    
-        uint256[2] memory pk_times_challenge = _bn128_multiply([pk.x_coord, pk.y_coord, challenge]);
-        uint256[2] memory rhs_check_1 = _bn128_add([announcement_g[0], announcement_g[1], pk_times_challenge[0], pk_times_challenge[1]]);    
-  
-        bool check_1 = lhs_check_1[0] == rhs_check_1[0] && lhs_check_1[1] == rhs_check_1[1];
-        return check_1;
-  }
-  
   function _proof_check_2(
             uint256[4] memory ciphertext, 
             uint256[2] memory plaintext, 
@@ -141,30 +124,38 @@ contract ThemisPolicyContract {
         bool check_2 = lhs_check_2[0] == rhs_check_2[0] && lhs_check_2[1] == rhs_check_2[1];
         return check_2;
       }
+  
+  function _proof_check_1(
+        uint256[2] memory public_key,
+        uint256[2] memory announcement_g,
+        uint256 challenge,
+        uint256 response
+      ) private returns (bool) {
+        EcPoint memory pk = EcPoint(public_key[0], public_key[1]);
+        EcPoint memory generator = EcPoint(uint256(1), uint256(2));
+        
+        uint256[2] memory lhs_check_1 = _bn128_multiply([generator.x_coord, generator.y_coord, response]);
+    
+        uint256[2] memory pk_times_challenge = _bn128_multiply([pk.x_coord, pk.y_coord, challenge]);
+        uint256[2] memory rhs_check_1 = _bn128_add([announcement_g[0], announcement_g[1], pk_times_challenge[0], pk_times_challenge[1]]);    
+  
+        bool check_1 = lhs_check_1[0] == rhs_check_1[0] && lhs_check_1[1] == rhs_check_1[1];
+        return check_1;
+  }
 
   function calculate_aggregate(
-    uint256[4][] memory input, 
+    uint256[4][initial_length] memory input, 
     uint256[2] memory public_key,
     bytes32 client_id
   //) payable public returns (uint256[4] memory) {
-    ) payable public returns (bool) { 
-    
-    EcPoint memory point_1_d = EcPoint({x_coord: uint256(1), y_coord: uint256(2)});
-    Ciphertext memory ctxt_d = Ciphertext({point1: point_1_d, point2: point_1_d});
-    EncryptedAggregate memory enc_aggr_d = EncryptedAggregate({
-      ctxt: ctxt_d, 
-      public_key: public_key
-    });
-
-    aggregate_storage[client_id] = enc_aggr_d; 
-
-
+    ) payable public returns (bool) {    
     emit Input(input[0]);
     emit Input(input[1]);
 
-    policies = [uint256(1), uint256(2)];
+    policies = policy_sc_address.get_policies();
     
-    // calculates aggregate
+    // todo: would be nice to break the input vector here, and not inside the inner product function.
+    // However, given the version of solidity, we cannot slice arrays using [:n].
     Ciphertext memory aggregate = _inner_product(
       input,
       policies
@@ -172,7 +163,10 @@ contract ThemisPolicyContract {
 
     // stores aggregate in array keyed by client_id && return aggregate to caller
     EncryptedAggregate memory enc_aggr = EncryptedAggregate({ 
-      ctxt: aggregate,
+      x0: aggregate.point1.x_coord, 
+      y0: aggregate.point1.y_coord, 
+      x1: aggregate.point2.x_coord, 
+      y1: aggregate.point2.y_coord, 
       public_key: public_key
     });
 
@@ -181,9 +175,8 @@ contract ThemisPolicyContract {
     return true;
   }
 
-  // supposed to replace `fetch_encrypted_aggregate` at some point. I like more uint256[4] than (.,.,.,.)
   function fetch_encrypted_aggregate_array(bytes32 client_id) public view returns (uint256[4] memory) {
-    return [aggregate_storage[client_id].ctxt.point1.x_coord, aggregate_storage[client_id].ctxt.point1.y_coord, aggregate_storage[client_id].ctxt.point2.x_coord, aggregate_storage[client_id].ctxt.point2.y_coord];
+    return [aggregate_storage[client_id].x0, aggregate_storage[client_id].y0, aggregate_storage[client_id].x1, aggregate_storage[client_id].y1];
   }
 
   function fetch_public_key(bytes32 client_id) public view returns (uint256[2] memory ) {
@@ -217,16 +210,18 @@ contract ThemisPolicyContract {
 
   // private
   function _inner_product(
-    uint256[4][] memory ciphertext_vector, 
+    uint256[4][initial_length] memory ciphertext_vector, 
     uint256[] memory scalar_vector
   ) private returns (Ciphertext memory) {
+
+      uint length = scalar_vector.length;
 
       uint256[2] memory aggregate_1 = [uint256(0), uint256(0)];
       uint256[2] memory aggregate_2 = [uint256(0), uint256(0)];
       uint256[2] memory resultMult_1 = [uint256(1), uint256(1)];
       uint256[2] memory resultMult_2 =  [uint256(1), uint256(1)];
 
-      for (uint i = 0; i < length_policies; i++) {
+      for (uint i = 0; i < length; i++) {
         resultMult_1 = _bn128_multiply([
           ciphertext_vector[i][0],
           ciphertext_vector[i][1], 
@@ -244,9 +239,7 @@ contract ThemisPolicyContract {
         aggregate_2 = _bn128_add([resultMult_2[0], resultMult_2[1], aggregate_2[0], aggregate_2[1]]);
         }
 
-      EcPoint memory point1 = EcPoint(aggregate_1[0], aggregate_1[1]);
-      EcPoint memory point2 = EcPoint(aggregate_2[0], aggregate_2[1]);
-      Ciphertext memory aggregate = Ciphertext(point1, point2);
+      Ciphertext memory aggregate = Ciphertext(EcPoint(aggregate_1[0], aggregate_1[1]), EcPoint(aggregate_2[0], aggregate_2[1]));
 
 
       emit Aggregate([aggregate.point1.x_coord, aggregate.point1.y_coord, aggregate.point2.x_coord, aggregate.point2.y_coord]);

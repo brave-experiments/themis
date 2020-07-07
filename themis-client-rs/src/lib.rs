@@ -19,7 +19,7 @@ use web3::types::U256;
 use bn::Fr;
 
 pub const MAX_PARALLEL_REQUESTS: usize = 64;
-pub const POLICY_SIZE: usize = 2;
+pub const POLICY_SIZE: usize = 512;
 // pub const POLICY_SIZE: usize = 16;
 //pub const POLICY_SIZE: usize = 128;
 

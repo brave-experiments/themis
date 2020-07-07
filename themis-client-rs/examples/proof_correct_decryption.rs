@@ -7,10 +7,11 @@ use web3::contract::Options;
 
 use bn::{Fr, Group, G1};
 use elgamal_bn::ciphertext::Ciphertext;
+use rand::{thread_rng, Rng};
 
 fn main() {
     let side_chain_addr = "http://127.0.0.1:9545".to_owned();
-    let contract_addr = "c2fC3Ecfa5d00B34a6F35977884843B337870e2a".to_owned();
+    let contract_addr = "99eAa0Bd2069837CF0590931f3f1d92465dD6e00".to_owned();
     let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"];
 
     let service =
@@ -20,25 +21,18 @@ fn main() {
     let (sk, pk) = generate_keys();
     let ctxt_one = pk.encrypt(&G1::one());
 
-    // Now we encode the policy vector. This MUST be the same as in the smart contract
-    let one = Fr::one();
-    let policy_vector = [one, one + one];
+    let policy_length = 16;
 
     //let mut csprng = thread_rng();
-    let interaction_vec = vec![ctxt_one.clone(), ctxt_one.clone()];
+    let interaction_vec = vec![ctxt_one.clone(); 512];
 
-    let multiplied_interactions: Vec<Ciphertext> = interaction_vec
-        .clone()
-        .into_iter()
-        .zip(policy_vector.iter())
-        .map(|(x, &y)| x * y)
-        .collect();
-
-    let aggregate: Ciphertext = multiplied_interactions[0] + multiplied_interactions[1];
-
-    let client_id = "client_id".to_owned();
+    let mut csprng = thread_rng();
+    // let rnd = csprng.gen_range(0, 100000);
+    let rnd = 4;
+    let rnd: String = rnd.to_string();
+    let client_id = "client_id".to_string() + &rnd;
     let mut opts = Options::default();
-    opts.gas = Some(web3::types::U256::from_dec_str("900000").unwrap());
+    opts.gas = Some(web3::types::U256::from_dec_str("3000000").unwrap());
 
     let tx_receipt = request_reward_computation(
         service.clone(),
@@ -48,23 +42,24 @@ fn main() {
         opts.clone(),
     );
 
-    assert!(!tx_receipt.is_err());
+    // assert!(!tx_receipt.is_err());
+    tx_receipt.unwrap();
 
     let result = fetch_aggregate_storage(service.clone(), client_id.clone(), Options::default());
 
     assert!(!result.is_err());
     let tuple = result.unwrap();
 
-    let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
+    let encrypted_point: CiphertextSolidity = [tuple[0], tuple[1], tuple[2], tuple[3]];
 
     // TODO: refactor to utils
     let encrypted_encoded = utils::decode_ciphertext(encrypted_point, pk);
-    assert!(!encrypted_encoded.is_err());
+    // assert!(!encrypted_encoded.is_err());
 
     let encrypted_encoded = encrypted_encoded.unwrap();
 
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
-    let expected_aggregate = sk.decrypt(&aggregate);
+    let expected_aggregate = G1::one() * Fr::from_str("17").unwrap();
 
     assert_eq!(decrypted_aggregate, expected_aggregate,);
 
