@@ -47,12 +47,15 @@ fn main() {
     }
 
     let mut csprng = thread_rng();
-    let rnd = csprng.gen_range(0, 100000);
+    let rnd = csprng.gen_range(0, 900000);
     let rnd: String = rnd.to_string();
     let client_id = "client_id".to_string() + &rnd;
 
     let mut opts = Options::default();
     opts.gas = Some(web3::types::U256::from_dec_str("30000000").unwrap());
+
+    let mut delay_1 = 20;
+    let mut delay_2 = 5;
 
     let tx_receipt = request_reward_computation(
         service.clone(),
@@ -66,17 +69,18 @@ fn main() {
     tx_receipt.unwrap();
 
     use std::{thread, time};
-    let delay_2 = 10;
     thread::sleep(time::Duration::from_secs(delay_1));
 
     let result = fetch_aggregate_storage(
         service.clone(), client_id.clone(), Options::default());
 
+    print!("{:?}, ", start_ts.elapsed().unwrap().as_secs_f64() - delay_1 as f64);
+
     let tuple = match result {
         Ok(r) => r, 
         Err(_e) => { 
-            println!("Error fetch_aggregate_storage: {:?}", _e);
-            println!(" # ");
+            //println!("Error fetch_aggregate_storage: {:?}", _e);
+            print!(" # ");
             process::exit(0x1000);
         }
     };
@@ -85,8 +89,8 @@ fn main() {
     let encrypted_encoded = match utils::decode_ciphertext(encrypted_point, pk) {
         Ok(r) => r,
         Err(_e) => { 
-            println!("Error decode_ciphertext: {:?}", _e);
-            println!(" # ");
+            //println!("Error decode_ciphertext: {:?}", _e);
+            print!(" ## ");
             process::exit(0x1000);
         }
     };
@@ -95,8 +99,8 @@ fn main() {
     let scalar_aggregate = match utils::recover_scalar(decrypted_aggregate, 16) {
         Ok(r) => r,
         Err(_e) => { 
-            println!("Error recover_scalar: {:?}", _e);
-            println!(" # ");
+            //println!("Error recover_scalar: {:?}", _e);
+            print!(" ### ");
             process::exit(0x1000);
         }
     };
@@ -105,8 +109,8 @@ fn main() {
         .proof_decryption_as_string(&encrypted_encoded, &decrypted_aggregate) {
             Ok(r) => r,
             Err(_e) => { 
-                println!("Error proof_decryption_as_string: {:?}", _e);
-                println!(" # ");
+                //println!("Error proof_decryption_as_string: {:?}", _e);
+                print!(" #### ");
                 process::exit(0x1000);
             }
         };
@@ -114,14 +118,14 @@ fn main() {
     let tx_receipt_proof = submit_proof_decryption(&service, &client_id, &proof_dec, &opts);
     tx_receipt_proof.unwrap();
 
-    let delay_2 = 5;
+    delay_2 = 5;
     thread::sleep(time::Duration::from_secs(delay_2));
     
     let _proof_result = match fetch_proof_verification(&service, &client_id, &Options::default()) {
         Ok(r) => r,
         Err(_e) => { 
-            println!("Error fetch_proof_verification {:?}", _e);
-            println!(" # ");
+            //println!("Error fetch_proof_verification {:?}", _e);
+            print!(" ##### ");
             process::exit(0x1000);
         }
     };
@@ -132,6 +136,6 @@ fn main() {
     //assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
     assert_eq!(scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
 
-    print!("{:?}, ", 
-        start_ts.elapsed().unwrap().as_secs_f64() - delay_1 as f64 - delay_2 as f64);
+    //print!("{:?}, ", 
+    //    start_ts.elapsed().unwrap().as_secs_f64() - delay_1 as f64 - delay_2 as f64);
 }
