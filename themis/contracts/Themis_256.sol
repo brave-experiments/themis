@@ -1,10 +1,230 @@
 //pragma solidity >=0.4.22 <0.6.0;
 pragma solidity >=0.4.22 <0.7.0;
 
-contract ThemisPolicyContract2 {
+contract ThemisPolicyContract256 {
 
-  uint constant length_policies = 2;
-  uint256[length_policies] policies = [uint256(1), uint256(2)];
+  uint constant length_policies = 256;
+  uint256[length_policies] policies = [
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1), //10
+
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2), // 2 * 10
+
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1), //10
+
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2), // 2 * 10
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1), //10
+
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2), // 2 * 10
+
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1),
+    uint256(1), //10
+
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2),
+    uint256(2), // 2 * 10
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0),
+    uint256(0)
+  ];
 
   struct EncryptedAggregate {
     uint256 x0;
@@ -40,6 +260,7 @@ contract ThemisPolicyContract2 {
   event IntegerHash(uint256 int_hashed);
   event Input(uint256[4] input);
   event Aggregate(uint256[4] aggr);
+  event StartSignal();
   event DoneProof();
 
   // TODO: define constructor
