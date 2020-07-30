@@ -1,11 +1,11 @@
 group,function,value,throughput_num,throughput_type,sample_measured_value,unit,iteration_count
-client_side,1. reward request 64 ads catalog),,,,99639941.0,ns,4
-client_side,1. reward request 64 ads catalog),,,,196985892.0,ns,8
-client_side,1. reward request 64 ads catalog),,,,293751782.0,ns,12
-client_side,1. reward request 64 ads catalog),,,,393924222.0,ns,16
-client_side,1. reward request 64 ads catalog),,,,495408935.0,ns,20
-client_side,1. reward request 64 ads catalog),,,,589616390.0,ns,24
-client_side,1. reward request 64 ads catalog),,,,683279619.0,ns,28
-client_side,1. reward request 64 ads catalog),,,,798048479.0,ns,32
-client_side,1. reward request 64 ads catalog),,,,975164025.0,ns,36
-client_side,1. reward request 64 ads catalog),,,,1070913568.0,ns,40
+client_side,1. reward request 64 ads catalog),,,,97883358.0,ns,4
+client_side,1. reward request 64 ads catalog),,,,195215612.0,ns,8
+client_side,1. reward request 64 ads catalog),,,,291084048.0,ns,12
+client_side,1. reward request 64 ads catalog),,,,382300199.0,ns,16
+client_side,1. reward request 64 ads catalog),,,,480516554.0,ns,20
+client_side,1. reward request 64 ads catalog),,,,579448539.0,ns,24
+client_side,1. reward request 64 ads catalog),,,,669808719.0,ns,28
+client_side,1. reward request 64 ads catalog),,,,773004395.0,ns,32
+client_side,1. reward request 64 ads catalog),,,,864798022.0,ns,36
+client_side,1. reward request 64 ads catalog),,,,1001099829.0,ns,40
