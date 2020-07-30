@@ -1,0 +1,11 @@
+group,function,value,throughput_num,throughput_type,sample_measured_value,unit,iteration_count
+client_side,1. reward request 64 ads catalog),,,,105862198.0,ns,4
+client_side,1. reward request 64 ads catalog),,,,210165922.0,ns,8
+client_side,1. reward request 64 ads catalog),,,,313832571.0,ns,12
+client_side,1. reward request 64 ads catalog),,,,459619249.0,ns,16
+client_side,1. reward request 64 ads catalog),,,,523892799.0,ns,20
+client_side,1. reward request 64 ads catalog),,,,635184395.0,ns,24
+client_side,1. reward request 64 ads catalog),,,,752415403.0,ns,28
+client_side,1. reward request 64 ads catalog),,,,906284652.0,ns,32
+client_side,1. reward request 64 ads catalog),,,,911934356.0,ns,36
+client_side,1. reward request 64 ads catalog),,,,1007880251.0,ns,40
