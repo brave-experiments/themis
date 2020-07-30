@@ -50,9 +50,39 @@ fn create_decrypt_overhead_helper(size_catalog: usize, c: &mut Criterion) {
         &label,
         move |b| {
             let (sk, pk) = generate_keys();
+            let mut rng = rand::thread_rng();
+
+            // generates interactions
+            let mut interaction_vec = vec![];
+            for _ in 0..size_catalog {
+                let rnd = rng.gen_range(0, 30);
+                let rnd_str: String = rnd.to_string();
+                let rnd_fr = Fr::from_str(&rnd_str).unwrap();
+                let r = G1::one() * rnd_fr;
+                interaction_vec.push(r);
+            }
+
+            // generates random policy
+            let mut policy_vec = vec![];
+            for _ in 0..size_catalog {
+                let rnd = rng.gen_range(0, 30);
+                let rnd_str: String = rnd.to_string();
+                let rnd_fr = Fr::from_str(&rnd_str).unwrap();
+                policy_vec.push(rnd_fr);
+            }
 
             // generates aggregate
-            let aggregate = G1::one() * Fr::from_str("5000").unwrap();
+            let pairwise_prod: Vec<G1> = interaction_vec
+                .into_iter()
+                .zip(policy_vec.into_iter())
+                .map(|(x, y)| {
+                    x * y
+                }).collect();
+            let mut aggregate = pairwise_prod[0];
+            for &i in pairwise_prod[1..].iter() {
+                aggregate = aggregate + i;
+            }
+
             let encrypted_aggregate = pk.encrypt(&aggregate);
 
             b.iter(|| {
