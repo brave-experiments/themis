@@ -12,7 +12,7 @@ use web3::contract::Options;
 
 use bn::{Fr, Group, G1};
 
-pub const POLICY_SIZE: usize = 256;
+pub const POLICY_SIZE: usize = 64;
 
 fn main() {
     let side_chain_addr =  match env::var("SIDECHAIN_ADDR") {
@@ -29,9 +29,9 @@ fn main() {
 
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract.abi"];
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_16ads.abi"];
-    //let contract_abi = include_bytes!["../build/ThemisPolicyContract_64ads.abi"];
+    let contract_abi = include_bytes!["../build/ThemisPolicyContract_64ads.abi"];
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_128ads.abi"];
-    let contract_abi = include_bytes!["../build/ThemisPolicyContract_256ads.abi"];
+    //let contract_abi = include_bytes!["../build/ThemisPolicyContract_256ads.abi"];
 
     // start counting time
     let start_ts = time::SystemTime::now();
@@ -130,13 +130,14 @@ fn main() {
 
     //assert_eq!(_scalar_aggregate, Fr::from_str("3").unwrap()); // 2ads
     //assert_eq!(_scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
-    //assert_eq!(scalar_aggregate, Fr::from_str("40").unwrap()); // 64 ads
+    assert_eq!(scalar_aggregate, Fr::from_str("40").unwrap()); // 64 ads
     //assert_eq!(scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
-    assert_eq!(scalar_aggregate, Fr::from_str("120").unwrap()); // 256 ads
+    //assert_eq!(scalar_aggregate, Fr::from_str("120").unwrap()); // 256 ads
 
-    print!("[ {:?}, {:?}, ({:?}) ]\n",
+    print!("  {:?}, {:?}, {:?} \n",
         request_and_fetch_time,
         fetch_proof_verification_time,
         fetch_proof_verification_time - request_and_fetch_time,
+        //side_chain_addr,
     );
 }
