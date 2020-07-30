@@ -59,7 +59,7 @@ fn test_request_reward_computation_and_fetch_storage() {
     use std::{thread, time};
     thread::sleep(time::Duration::from_secs(3));
 
-    println!("{:?}",  client_id);
+    println!("{:?}", client_id);
 
     let result = fetch_aggregate_storage(service, client_id, Options::default());
 

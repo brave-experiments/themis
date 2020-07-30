@@ -5,13 +5,13 @@ use themis_client::*;
 
 use web3::contract::Options;
 
-use std::time::SystemTime;
+use bn::{Fr, Group, G1};
 use rand::thread_rng;
-use bn::{Group, G1, Fr};
-use rand::Rng; 
+use rand::Rng;
+use std::time::SystemTime;
 use std::{env, process};
 
-pub const POLICY_SIZE: usize = 64; 
+pub const POLICY_SIZE: usize = 64;
 
 fn main() {
     let side_chain_addr = match env::var("SIDECHAIN_ADDR") {
@@ -31,8 +31,9 @@ fn main() {
     let contract_abi = include_bytes!["../build/ThemisPolicyContract_64ads.abi"];
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_128ads.abi"];
     //let contract_abi = include_bytes!["../build/ThemisPolicyContract_256ads.abi"];
-    let service = SideChainService::new(
-        side_chain_addr.clone(), contract_addr.clone(), contract_abi).unwrap();
+    let service =
+        SideChainService::new(side_chain_addr.clone(), contract_addr.clone(), contract_abi)
+            .unwrap();
 
     // start counting time
     let start_ts = SystemTime::now();
@@ -71,8 +72,7 @@ fn main() {
     let delay = 10;
     thread::sleep(time::Duration::from_secs(delay));
 
-    let result = fetch_aggregate_storage(
-        service, client_id.clone(), Options::default());
+    let result = fetch_aggregate_storage(service, client_id.clone(), Options::default());
 
     let tuple = match result {
         Ok(r) => r,
@@ -106,10 +106,12 @@ fn main() {
     //assert_eq!(scalar_aggregate, Fr::from_str("3").unwrap()); // 2ads
     //assert_eq!(scalar_aggregate, Fr::from_str("17").unwrap()); // 16 ads
     assert_eq!(scalar_aggregate, Fr::from_str("40").unwrap()); // 64 ads
-    //assert_eq!(scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
-    //assert_eq!(scalar_aggregate, Fr::from_str("120").unwrap()); // 256 ads
+                                                               //assert_eq!(scalar_aggregate, Fr::from_str("60").unwrap()); // 128 ads
+                                                               //assert_eq!(scalar_aggregate, Fr::from_str("120").unwrap()); // 256 ads
 
     //println!("Time elapsed: {:?} ({:?})", start_ts.elapsed(), client_id);
-    print!("{:?}, ", start_ts.elapsed().unwrap().as_secs_f64() - delay as f64);
+    print!(
+        "{:?}, ",
+        start_ts.elapsed().unwrap().as_secs_f64() - delay as f64
+    );
 }
-

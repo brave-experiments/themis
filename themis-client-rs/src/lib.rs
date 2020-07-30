@@ -17,8 +17,6 @@ use rand::thread_rng;
 use web3::contract::Options;
 use web3::types::U256;
 
-//pub const POLICY_SIZE: usize = 2;
-//pub const POLICY_SIZE: usize = 16;
 //pub const POLICY_SIZE: usize = 64;
 pub const POLICY_SIZE: usize = 128;
 //pub const POLICY_SIZE: usize = 256;
