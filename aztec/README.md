@@ -10,3 +10,5 @@
 
 
 You can change the benchmarks parameters in `measurements-setup/benchmarks/proof_generation.js` 
+
+Results running on a single `t2.2xlarge` EC2 instance
