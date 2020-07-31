@@ -1,0 +1,39 @@
+version: 2
+jobs:
+    build:
+        working_directory: ~/repo
+        docker:
+            - image: circleci/node:10.15.3
+        steps:
+            - checkout
+            - run:
+                name: "Install Yarn"
+                command: sudo npm install -g yarn@1.15.2
+            - run:
+                name: "Install Dependencies"
+                command: yarn install
+            - save_cache:
+                key: repo-{{ .Environment.CIRCLE_SHA1 }}
+                paths:
+                    - ~/repo
+    test:
+        working_directory: ~/repo
+        docker:
+            - image: circleci/node:10.15.3
+            - image: trufflesuite/ganache-cli:v6.4.1
+              command: ganache-cli -i 1234 -p 8545 -e 10000000 -l 6721975
+        steps:
+            - restore_cache:
+                keys:
+                    - repo-{{ .Environment.CIRCLE_SHA1 }}
+            - run:
+                name: "Test demo"
+                command: yarn demo
+workflows:
+    version: 2
+    main:
+        jobs:
+            - build
+            - test:
+                requires:
+                    - build
