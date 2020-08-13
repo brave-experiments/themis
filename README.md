@@ -1,47 +1,44 @@
-## Decentralized BAT network experiments
+# THEMIS prototype
 
-This repo maintains code part of the research efforts, PoCs, and testing for
-exploring privacy preserving PoA chains.
+This repository contains the prototypes and measurements code for the client and 
+smart contract to run THEMIS, a novel privacy-by-design ad platform that is
+decentralized and requires zero trust from users.
 
-### Performance of anonymous and confidential payments on PoA chains
+This implementation is based on [THEMIS: Decentralized and Trustless Ad Platform
+with Reporting Integrity](https://arxiv.org/abs/2007.05556), by the Brave
+Research team.
 
-We have tested and measured both [AZTEC](https://github.com/AztecProtocol/AZTEC)
-and [Anonymous-Zether](https://github.com/jpmorganchase/anonymous-zether) under
-several settings. You can check the plots of the results [here](./plots). 
+### Contents:
 
-The initial measurements were performed against a 7-node Quorum PoA chain
-running locally. You may check in [Quorum's examples
-repository](https://github.com/jpmorganchase/quorum-examples) how to set it up
-how to run the sidechain locally.
+- [THEMIS client implementation](./themis-client-rs): Implementation of the client-side
+  logic which interacts with the sidechain. This folder also includes
+benchmarks, tests and end-to-end examples of how the protocol works.
 
-**A. AZTEC performance measurements**: 
+- [THEMIS policy smart contract](./themis-policy-contract): Implementation of
+  the THEMIS policy smart contract, which calculates the user ad rewards based
+on the user's encrypted input.
 
-1) Clone the [AZTEC ganache starter kit](https://github.com/AztecProtocol/aztec-ganache-starter-kit)
-2) Change truffle [configurations](./aztec/)
-3) Edit the [demo code](./aztec/demo.js) for running and measuring performance
-with different setups.
-4) Replace `demo.js` and truffle configuration files in the AZTEC ganache starter kit;
-5) Run a Pantheon or Quorum PoA chain and deploy the smart contracts using truffle
-6) Run the measurements
-
-**B. Zether performance measurements**
-
-1) Clone the [Anonymous Zether
-repo](https://github.com/jpmorganchase/anonymous-zether). You may also use the setup in [this repo](./quorum-network)
-2) Make sure a Quorum (compatible only with Quorum for now) sidechain is running locally;
-4) Clone the [Anonymous Zether example repo](https://github.com/jpmorganchase/anonymous-zether)
-3) Use the examples in [client.js](./anon-zether/client.js) and
-[index.js](./anon-zether/index.js) to modify `packages/anonymous.js/src/client.js` and `packages/example/index.js` and setup the measurements.
-
-
-**C. Measurement plotting and results**
-
-You can check the results and python scripts to generate the plots [here](./plots).
-
-### Background
-
-[Privacy Preserving and Decentralized Brave Rewards - slides (deprecated)](https://docs.google.com/presentation/d/1Z-SSLBkcZfuTQOTjwB1lU5HoSkYUSBlxd0F__nHQgvc/edit#slide=id.p1)
+- [Payment measurements](./payment-measurements): Setup used to calculate
+  scalability of confidential payments using AZTEC in the context of THEMIS.
 
 --- 
 
-Brave Research Team
+*Abstract*: Online advertising fuels the (seemingly)free internet. However, although users
+can access most websites free of charge, they need to pay a heavy cost on their
+privacy and blindly trust third parties and intermediaries that absorb great
+amounts of ad revenues and user data. This is one of the reasons users opt out
+from advertising by resorting ad blockers that in turn cost publishers millions
+of dollars in lost ad revenues. Existing privacy-preserving advertising
+approaches(e.g., Adnostic, Privad, Brave Ads) from both industry and academia
+cannot guarantee the integrity of the performance analytics they provide to
+advertisers, while they also rely on centralized management that users have to
+trust without being able to audit.In this paper, we propose THEMIS, a novel
+privacy-by-design ad platform that is decentralized and requires zero trust from
+users. THEMIS (i) provides auditability to all participants, (ii) rewards users
+for viewing ads,and (iii) allows advertisers to verify the performance and
+billing reports of their ad campaigns. To demonstrate the feasibility and
+practicability of our approach,we implemented a prototype of THEMIS using a
+combination of smart contracts and zero-knowledge schemes.Performance
+evaluation results show that during ad reward payouts, THEMIS can support more
+than 51M concurrent users on a single-sidechain setup or 153Musers on a
+multi-sidechain setup, thus proving that THEMIS scales linearly.
