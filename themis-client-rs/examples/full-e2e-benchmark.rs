@@ -78,8 +78,8 @@ fn main() {
 
     let tuple = match result {
         Ok(r) => r,
-        Err(_e) => {
-            print!(" # ");
+        Err(e) => {
+            print!(" # Error request_and_fetch_time {:?}", e);
             process::exit(0x1000);
         }
     };
@@ -89,8 +89,8 @@ fn main() {
     let encrypted_point: CiphertextSolidity = [tuple.0, tuple.1, tuple.2, tuple.3];
     let encrypted_encoded = match utils::decode_ciphertext(encrypted_point, pk) {
         Ok(r) => r,
-        Err(_e) => {
-            print!(" ## \n");
+        Err(e) => {
+            print!(" # Error decode_ciphertext {:?} \n", e);
             process::exit(0x1000);
         }
     };
@@ -98,16 +98,16 @@ fn main() {
     let decrypted_aggregate = sk.decrypt(&encrypted_encoded);
     let scalar_aggregate = match utils::recover_scalar(decrypted_aggregate, 16) {
         Ok(r) => r,
-        Err(_e) => {
-            print!(" ### \n");
+        Err(e) => {
+            print!(" # Error recover_scalar {:?} \n", e);
             process::exit(0x1000);
         }
     };
 
     let proof_dec = match sk.proof_decryption_as_string(&encrypted_encoded, &decrypted_aggregate) {
         Ok(r) => r,
-        Err(_e) => {
-            print!(" #### \n");
+        Err(e) => {
+            print!(" # Error sk.proof_decryption_as_string {:?} \n", e);
             process::exit(0x1000);
         }
     };
@@ -119,8 +119,8 @@ fn main() {
 
     let proof_result = match fetch_proof_verification(&service, &client_id, &Options::default()) {
         Ok(r) => r,
-        Err(_e) => {
-            print!(" ##### \n");
+        Err(e) => {
+            print!(" # Error fetch_proof_verification {:?} \n", e);
             process::exit(0x1000);
         }
     };
