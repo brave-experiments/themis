@@ -124,7 +124,7 @@ dependencies = [
 [[package]]
 name = "bn"
 version = "0.4.4"
-source = "git+https://github.com/paritytech/bn#635c4cdd560bc0c8b262e6bf809dc709da8bcd7e"
+source = "git+https://github.com/paritytech/bn?rev=635c4cdd560bc0c8b262e6bf809dc709da8bcd7e#635c4cdd560bc0c8b262e6bf809dc709da8bcd7e"
 dependencies = [
  "byteorder",
  "crunchy",
@@ -405,7 +405,7 @@ checksum = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
 [[package]]
 name = "elgamal_bn"
 version = "0.1.0"
-source = "git+https://github.com/brave-experiments/elgamal_bn#b1bcd24be0b4d7e4881cbc9734fbad53afe25cd9"
+source = "git+https://github.com/brave-experiments/elgamal_bn?rev=942247a243e3de26c907452232b6bf24af8d9b3a#942247a243e3de26c907452232b6bf24af8d9b3a"
 dependencies = [
  "bincode",
  "bn",
